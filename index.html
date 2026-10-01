@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Ayo Baca - Edisi Ultimate</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Outfit & Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <!-- Tone.js & Confetti -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Nunito', 'sans-serif'],
+            heading: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+            }
+          },
+          boxShadow: {
+            'float': '0 15px 30px -10px rgba(124, 58, 237, 0.4)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none; 
+      overflow-x: hidden;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+    
+    /* Background Blur Blobs */
+    .bg-blobs {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: -1;
+      overflow: hidden;
+      background: radial-gradient(circle at 15% 50%, rgba(232, 228, 253, 0.8), transparent 30%),
+                  radial-gradient(circle at 85% 30%, rgba(253, 228, 228, 0.7), transparent 30%),
+                  radial-gradient(circle at 50% 80%, rgba(228, 253, 233, 0.6), transparent 30%);
+      filter: blur(50px);
+      transition: all 0.5s ease;
+    }
+
+    .dark .bg-blobs {
+      background: radial-gradient(circle at 15% 50%, rgba(76, 29, 149, 0.25), transparent 40%),
+                  radial-gradient(circle at 85% 30%, rgba(153, 27, 27, 0.2), transparent 40%),
+                  radial-gradient(circle at 50% 80%, rgba(6, 78, 59, 0.25), transparent 40%);
+    }
+
+    /* Container Latar Belakang (Bintang, Awan, Bulan) */
+    #starfield {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0) rotate(-20deg); }
+      70% { transform: scale(1.2) rotate(10deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+    
+    @keyframes floatItem {
+      from { transform: translateY(0px) rotate(0deg); }
+      to { transform: translateY(-15px) rotate(5deg); }
+    }
+
+    .pop-in-anim {
+      animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, floatItem 3s ease-in-out infinite alternate;
+      opacity: 0;
+    }
+    
+    .golden-star { filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.8)); }
+    .white-cloud { filter: drop-shadow(0 0 20px rgba(203, 213, 225, 0.6)); }
+    .crescent-moon { filter: drop-shadow(0 0 30px rgba(147, 197, 253, 0.8)); }
+
+    /* Frosted Glass Main Card - Dibuat lebih transparan agar latar terlihat */
+    .main-card {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      transition: all 0.5s ease;
+    }
+
+    .dark .main-card {
+      background: rgba(30, 41, 59, 0.35); /* Transparansi ditingkatkan dari 0.85 ke 0.35 */
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    }
+
+    /* Word Pills 3D */
+    .word-pill {
+      background-color: #ffffff;
+      border: 2px solid #cbd5e1;
+      color: #334155;
+      box-shadow: 0 5px 0 0 #cbd5e1;
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      touch-action: manipulation;
+      word-break: break-word;
+      transform: translateY(0);
+    }
+
+    .dark .word-pill {
+      background-color: #1e293b;
+      border-color: #334155;
+      color: #f1f5f9;
+      box-shadow: 0 5px 0 0 #334155;
+    }
+
+    .word-pill:active {
+      transform: translateY(5px);
+      box-shadow: 0 0px 0 0 transparent !important;
+    }
+
+    .word-pill.correct {
+      background-color: #10b981;
+      border-color: #059669;
+      color: #ffffff;
+      box-shadow: 0 0px 0 0 #059669;
+      transform: translateY(5px);
+    }
+
+    /* Segmented Navigation */
+    .level-tab { transition: all 0.3s ease; }
+    .level-tab.active {
+      background-color: #7c3aed;
+      color: #ffffff;
+      box-shadow: 0 4px 15px -3px rgba(124, 58, 237, 0.4);
+    }
+    .level-tab.inactive { background-color: transparent; color: #64748b; }
+    .dark .level-tab.inactive { color: #94a3b8; }
+    
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+      70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .recording-pulse {
+      animation: pulse-ring 2s infinite cubic-bezier(0.45, 0, 0.55, 1);
+      background-color: #ef4444 !important;
+      color: white !important;
+    }
+  </style>
+</head>
+<body class="min-h-[100dvh] flex flex-col justify-between font-sans bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-500">
+
+  <!-- Latar Belakang -->
+  <div class="bg-blobs"></div>
+  <div id="starfield"></div>
+
+  <header class="w-full max-w-5xl mx-auto px-5 pt-6 flex items-center justify-between z-10 relative">
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 dark:border-slate-700 text-brand-600 dark:text-brand-400 text-2xl flex-shrink-0 transition-colors">
+        <i class="ph-fill ph-book-open-text"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl font-heading font-extrabold tracking-tight">Ayo Baca</h1>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Toggle Tema -->
+      <button onclick="toggleTheme()" class="w-11 h-11 rounded-full bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all active:scale-95 touch-manipulation">
+        <i id="themeIcon" class="ph-bold ph-moon text-slate-400"></i>
+      </button>
+
+      <!-- Toggle Suara -->
+      <button id="btnSoundToggle" onclick="toggleMute()" class="w-11 h-11 rounded-full bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 text-brand-600 flex items-center justify-center text-xl transition-all active:scale-95 touch-manipulation">
+        <i id="soundIcon" class="ph-bold ph-speaker-high"></i>
+      </button>
+
+      <!-- Panel Gamifikasi (Bintang, Awan, Bulan) -->
+      <div id="starCounterWrapper" class="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2.5 rounded-full shadow-sm border border-slate-100 dark:border-slate-700 transition-all duration-300">
+        <!-- Akan diisi oleh JavaScript -->
+      </div>
+    </div>
+  </header>
+
+  <main class="w-full max-w-4xl mx-auto px-4 py-6 sm:py-10 flex-1 flex flex-col items-center justify-center z-10 relative">
+
+    <!-- Navigasi Level Kategori -->
+    <div class="w-full max-w-lg bg-white/60 dark:bg-slate-800/60 backdrop-blur-md p-1.5 rounded-full shadow-sm border border-white dark:border-slate-700 flex items-center justify-between mb-8 overflow-x-auto relative transition-colors">
+      <button onclick="selectLevel('kata')" id="tab-kata" class="level-tab flex-1 px-4 py-2.5 rounded-full text-sm font-bold active touch-manipulation whitespace-nowrap">
+        Kata
+      </button>
+      <button onclick="selectLevel('frasa')" id="tab-frasa" class="level-tab flex-1 px-4 py-2.5 rounded-full text-sm font-bold inactive touch-manipulation whitespace-nowrap">
+        Frasa
+      </button>
+      <button onclick="selectLevel('kalimat')" id="tab-kalimat" class="level-tab flex-1 px-4 py-2.5 rounded-full text-sm font-bold inactive touch-manipulation whitespace-nowrap">
+        Kalimat
+      </button>
+      <div class="w-px h-6 bg-slate-200 dark:bg-slate-600 mx-1 hidden sm:block"></div>
+      <button onclick="openCustomModal()" class="level-tab px-4 py-2.5 rounded-full text-sm font-bold inactive touch-manipulation flex justify-center items-center group whitespace-nowrap">
+        <i class="ph-bold ph-pencil-simple text-lg group-hover:text-brand-500 transition-colors"></i>
+      </button>
+    </div>
+
+    <!-- Kanvas Area Membaca -->
+    <div class="w-full main-card rounded-[2.5rem] p-6 sm:p-12 flex flex-col items-center relative z-10">
+      
+      <!-- Instruksi Maskot -->
+      <div class="flex items-center gap-3 mb-8 w-full justify-center">
+        <div class="bg-blue-50 dark:bg-blue-900/40 px-6 py-3 rounded-full text-center transition-colors">
+          <p id="mascotText" class="text-sm font-bold text-blue-600 dark:text-blue-400 flex items-center gap-2">
+            <i class="ph-fill ph-info text-lg"></i>
+            <span>Ketuk mikrofon saat kamu siap membaca berurutan.</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Container Teks Kata -->
+      <div class="w-full min-h-[160px] flex flex-wrap items-center justify-center gap-4 sm:gap-5 text-center z-10 mb-8" id="readingContainer">
+        <!-- Diisi JS -->
+      </div>
+
+      <!-- Live Transcript & Badge -->
+      <div class="min-h-[60px] flex flex-col items-center justify-center text-center mb-6 w-full">
+        <div id="statusBadge" class="hidden px-5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase mb-2"></div>
+        <p id="liveTranscript" class="text-base font-semibold text-slate-400 dark:text-slate-500 min-h-[24px]">...</p>
+      </div>
+
+      <!-- Tombol Aksi Bawah -->
+      <div class="w-full flex flex-row items-center justify-center gap-4 z-10">
+        <!-- Text to Speech -->
+        <button onclick="speakTargetText()" class="w-14 h-14 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center shadow-sm border-2 border-slate-200 dark:border-slate-700 transition-all active:scale-95 touch-manipulation">
+          <i class="ph-fill ph-speaker-high text-2xl"></i>
+        </button>
+
+        <!-- Mikrofon -->
+        <button id="btnMic" onclick="toggleSpeech()" class="flex-1 max-w-[240px] py-4 bg-brand-600 text-white font-heading font-extrabold text-lg sm:text-xl rounded-full flex items-center justify-center gap-3 shadow-float transition-all active:scale-95 touch-manipulation">
+          <i id="micIcon" class="ph-bold ph-microphone text-2xl"></i>
+          <span id="micLabel">Mulai Baca</span>
+        </button>
+
+        <!-- Acak Baru / Lewati -->
+        <button onclick="nextItem()" class="w-14 h-14 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center shadow-sm border-2 border-slate-200 dark:border-slate-700 transition-all active:scale-95 touch-manipulation">
+          <i class="ph-bold ph-arrow-right text-2xl"></i>
+        </button>
+      </div>
+
+      <!-- Fitur Tes Simulasi -->
+      <div class="mt-8 pt-4 w-full flex items-center justify-center text-sm z-10">
+        <button onclick="simulateReadSuccess()" class="text-brand-500 hover:text-brand-600 font-bold transition-colors touch-manipulation flex items-center gap-2 px-4 py-2 rounded-full hover:bg-brand-50 dark:hover:bg-slate-800/50">
+          <i class="ph-fill ph-magic-wand"></i> Tes Keberhasilan (Simulasi)
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal Tulis Sendiri -->
+  <div id="customModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+    <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl flex flex-col gap-4 transform scale-95 transition-all duration-300 border border-slate-100 dark:border-slate-700" id="customModalContent">
+      <h3 class="font-heading font-extrabold text-2xl text-slate-800 dark:text-white">Tulis Sendiri</h3>
+      <p class="text-sm text-slate-500 font-medium">Ketik kata/kalimat khusus untuk dibaca. (Gunakan tanda hubung - untuk kata ulang)</p>
+      <textarea id="customInput" rows="3" maxlength="100" class="w-full p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-transparent text-slate-800 dark:text-white font-bold text-lg resize-none outline-none focus:border-brand-500" placeholder="Contoh: Kupu-kupu terbang"></textarea>
+      <div class="flex gap-3 justify-end mt-4">
+        <button onclick="closeCustomModal()" class="px-6 py-3 rounded-full font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700">Batal</button>
+        <button onclick="applyCustomText()" class="px-8 py-3 rounded-full font-bold bg-brand-600 text-white hover:bg-brand-500">Mulai</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifikasi Toast -->
+  <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 translate-y-24 opacity-0 z-50 px-6 py-3 rounded-full shadow-xl font-bold text-sm transition-all duration-400 flex items-center gap-2 pointer-events-none">
+    <i id="toastIcon" class="ph-fill ph-info text-lg"></i>
+    <span id="toastMessage">Pesan</span>
+  </div>
+
+  <script>
+    // ==========================================
+    // TEMA: DEFAULT DARK MODE
+    // ==========================================
+    let savedTheme = localStorage.getItem('ayobaca_theme_v5');
+    let isDark = savedTheme !== null ? savedTheme === 'dark' : true; 
+
+    function initTheme() {
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('themeIcon').className = "ph-bold ph-sun text-amber-400";
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('themeIcon').className = "ph-bold ph-moon text-slate-400";
+      }
+    }
+    initTheme(); // Segera eksekusi
+
+    function toggleTheme() {
+      isDark = !isDark;
+      localStorage.setItem('ayobaca_theme_v5', isDark ? 'dark' : 'light');
+      initTheme();
+      if(!isDark) document.getElementById('starfield').innerHTML = ''; // bersihkan langit
+    }
+
+    // ==========================================
+    // LOGIKA SPOK & KALIMAT (Sangat Semantik)
+    // ==========================================
+    const dbSPOK = {
+      kalimatKeluarga: [
+        { s: ["Ayah", "Kakek", "Paman"], p: "membaca", o: ["koran", "buku", "majalah"], k: ["di ruang tamu", "di teras", "pagi ini"] },
+        { s: ["Ibu", "Nenek", "Bibi", "Kakak"], p: "memasak", o: ["nasi", "sayur", "ayam", "ikan", "mie"], k: ["di dapur", "pagi ini", "untuk makan malam"] },
+        { s: ["Adik", "Kakak", "Budi", "Siti"], p: "bermain", o: ["bola", "layang-layang", "sepeda", "boneka"], k: ["di halaman", "di taman", "sore hari"] },
+        { s: ["Ayah", "Ibu", "Kakak"], p: "membeli", o: ["sayur", "buah", "susu", "roti", "kue"], k: ["di pasar", "di toko", "di supermarket"] },
+        { s: ["Kakek", "Ayah", "Paman"], p: "menyiram", o: ["bunga", "tanaman", "rumput"], k: ["di halaman", "di kebun", "setiap pagi"] },
+        { s: ["Adik", "Siti", "Budi"], p: "memakan", o: ["roti", "pisang", "kue", "apel"], k: ["di ruang makan", "dengan lahap", "saat istirahat"] }
+      ],
+      kalimatProfesi: [
+        { s: ["Nelayan"], p: "menangkap", o: ["ikan", "udang", "cumi-cumi"], k: ["di laut", "di lautan luas", "malam hari"] },
+        { s: ["Petani"], p: "menanam", o: ["padi", "jagung", "sayuran", "tomat"], k: ["di sawah", "di kebun", "dengan rajin"] },
+        { s: ["Polisi"], p: "mengatur", o: ["kendaraan", "lalu lintas", "mobil"], k: ["di perempatan", "di jalan raya", "setiap pagi"] },
+        { s: ["Dokter"], p: "memeriksa", o: ["pasien", "orang sakit", "anak-anak"], k: ["di klinik", "di rumah sakit", "dengan teliti"] },
+        { s: ["Guru"], p: "mengajar", o: ["murid", "siswa", "anak-anak"], k: ["di sekolah", "di ruang kelas", "dengan sabar"] }
+      ],
+      kalimatHewan: [
+        { s: ["Kucing"], p: "mengejar", o: ["tikus", "bola", "kupu-kupu"], k: ["di halaman", "di taman", "dengan cepat"] },
+        { s: ["Kucing", "Anjing"], p: "memakan", o: ["daging", "ikan"], k: ["di dapur", "di teras", "dengan lahap"] },
+        { s: ["Sapi", "Kambing", "Kuda", "Kelinci"], p: "memakan", o: ["rumput", "daun", "wortel"], k: ["di padang rumput", "di kebun", "setiap hari"] },
+        { s: ["Burung"], p: "memakan", o: ["biji-bijian", "ulat", "buah"], k: ["di pohon", "di taman", "pagi ini"] },
+        { s: ["Burung"], p: "membangun", o: ["sarang"], k: ["di atas pohon", "di ranting", "dengan ranting"] },
+        { s: ["Ikan"], p: "mencari", o: ["makanan", "lumut"], k: ["di dasar sungai", "di dasar kolam", "di terumbu karang"] },
+        { s: ["Anjing"], p: "menjaga", o: ["rumah", "tulang"], k: ["di malam hari", "di halaman", "dengan waspada"] }
+      ]
+    };
+
+    function getRandomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    // Ekstrak semua kosakata untuk level "Kata"
+    const kosaKataDasar = ["Buku", "Sepeda", "Bola", "Taman", "Meja", "Kucing", "Rumah", "Pohon", "Bunga", "Kupu-kupu", "Hati-hati", "Mobil", "Pasar", "Sekolah", "Ayah", "Ibu", "Guru", "Dokter", "Pintar", "Bersih"];
+
+    function generateDynamicItem(level) {
+      if (level === 'kata') {
+        return getRandomItem(kosaKataDasar);
+      } 
+      else if (level === 'frasa') {
+        const type = Math.floor(Math.random() * 3);
+        if (type === 0) return `${getRandomItem(["Ayah", "Ibu", "Kakek", "Nenek", "Kakak", "Adik"])} ${getRandomItem(["membaca", "memasak", "tidur", "bermain", "makan", "minum"])}`;
+        if (type === 1) return `${getRandomItem(["Kucing", "Anjing", "Sapi", "Burung", "Ikan"])} ${getRandomItem(["berlari", "melompat", "terbang", "makan", "tidur", "berenang"])}`;
+        if (type === 2) return `${getRandomItem(["Baju", "Sepatu", "Buku", "Tas", "Sepeda", "Kue"])} ${getRandomItem(["baru", "bagus", "merah", "biru", "bersih", "manis"])}`;
+      } 
+      else if (level === 'kalimat') {
+        const category = getRandomItem(['kalimatKeluarga', 'kalimatProfesi', 'kalimatHewan']);
+        const template = getRandomItem(dbSPOK[category]);
+        const kalimat = `${getRandomItem(template.s)} ${template.p} ${getRandomItem(template.o)} ${getRandomItem(template.k)}`;
+        return kalimat.replace(/\s+/g, ' ').trim(); // Bersihkan spasi ganda
+      }
+      return "Buku baru";
+    }
+
+    // STATE VARIABLES
+    let currentLevel = 'kata';
+    let currentTargetText = '';
+    let currentTargetWords = [];
+    let currentTargetIndex = 0; 
+    
+    // SISTEM SKOR & GAMIFIKASI
+    let totalScore = parseInt(localStorage.getItem('ayobaca_total_score_v5')) || 0;
+    
+    let isListening = false;
+    let soundEnabled = true;
+    let isToneInitialized = false;
+
+    let recognition = null;
+    let synth = window.speechSynthesis;
+    let indonesianVoice = null;
+    let successSynth = null;
+    let failSynth = null;
+    let accumulatedTranscript = "";
+
+    // Inisialisasi Audio & TTS
+    function initVoices() { indonesianVoice = synth.getVoices().find(v => v.lang.includes('id')) || null; }
+    if (synth && synth.onvoiceschanged !== undefined) synth.onvoiceschanged = initVoices;
+
+    async function initAudioContext() {
+      if (isToneInitialized) return;
+      try {
+        await Tone.start(); 
+        successSynth = new Tone.PolySynth(Tone.Synth, { oscillator: { type: "sine" }, envelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 1.5 } }).toDestination();
+        successSynth.volume.value = 5; 
+        isToneInitialized = true;
+      } catch (e) { console.warn("Audio setup failed.", e); }
+    }
+
+    ['click', 'touchstart'].forEach(evt => document.addEventListener(evt, initAudioContext, { once: true }));
+
+    function playSuccessTone() {
+      if (!soundEnabled || !successSynth) return;
+      try {
+        const now = Tone.now();
+        successSynth.triggerAttackRelease("C5", "8n", now);
+        successSynth.triggerAttackRelease("E5", "8n", now + 0.15);
+        successSynth.triggerAttackRelease("G5", "8n", now + 0.3);
+        successSynth.triggerAttackRelease("C6", "2n", now + 0.45);
+      } catch (err) {}
+    }
+    
+    function playWordTone() {
+      if (!soundEnabled || !successSynth) return;
+      try { successSynth.triggerAttackRelease("G5", "16n"); } catch (err) {}
+    }
+
+    function toggleMute() {
+      soundEnabled = !soundEnabled;
+      const icon = document.getElementById('soundIcon');
+      icon.className = soundEnabled ? "ph-bold ph-speaker-high" : "ph-bold ph-speaker-slash";
+      showToast(soundEnabled ? "Suara diaktifkan" : "Suara dimatikan", "info");
+    }
+
+    function updateScoreUI() {
+      // 50 bintang = 1 awan. 20 awan (1000 kata) = 1 bulan sabit.
+      const stars = totalScore % 50;
+      const totalClouds = Math.floor(totalScore / 50);
+      const clouds = totalClouds % 20;
+      const moons = Math.floor(totalClouds / 20);
+
+      let html = '';
+      if (moons > 0) html += `<div class="flex items-center gap-1.5"><i class="ph-fill ph-moon text-blue-300 text-xl"></i><span class="font-bold">${moons}</span></div>`;
+      if (clouds > 0) html += `<div class="flex items-center gap-1.5"><i class="ph-fill ph-cloud text-slate-300 text-xl"></i><span class="font-bold">${clouds}</span></div>`;
+      html += `<div class="flex items-center gap-1.5"><i class="ph-fill ph-star text-amber-400 text-xl"></i><span class="font-bold">${stars}</span></div>`;
+      
+      // Tambahkan separator
+      html = html.replace(/<\/div><div/g, '</div><div class="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1"></div><div');
+
+      const wrapper = document.getElementById('starCounterWrapper');
+      wrapper.innerHTML = html;
+      wrapper.classList.add('scale-110');
+      setTimeout(() => wrapper.classList.remove('scale-110'), 300);
+    }
+
+    function spawnBackgroundItem() {
+      if (!isDark) return;
+      const container = document.getElementById('starfield');
+      
+      // Batasi elemen di DOM agar tidak berat
+      if (container.children.length >= 40) container.removeChild(container.firstChild);
+
+      const item = document.createElement('i');
+      
+      // Logika Kemunculan Spesial
+      if (totalScore > 0 && totalScore % 1000 === 0) {
+        // Milestone Bulan Sabit!
+        container.innerHTML = ''; 
+        item.className = "ph-fill ph-moon crescent-moon absolute pop-in-anim";
+        item.style.color = "#93c5fd"; 
+        item.style.fontSize = "150px";
+        item.style.left = "50vw";
+        item.style.top = "50vh";
+        item.style.transform = "translate(-50%, -50%)";
+        triggerConfetti(true);
+      } else if (totalScore > 0 && totalScore % 50 === 0) {
+        // Milestone Awan!
+        container.innerHTML = ''; 
+        item.className = "ph-fill ph-cloud white-cloud absolute pop-in-anim";
+        item.style.color = "#cbd5e1"; 
+        item.style.fontSize = "120px";
+        item.style.left = (20 + Math.random() * 60) + 'vw';
+        item.style.top = (20 + Math.random() * 60) + 'vh';
+        triggerConfetti(false);
+      } else {
+        // Bintang Biasa
+        item.className = "ph-fill ph-star golden-star absolute pop-in-anim";
+        item.style.color = "#fbbf24";
+        item.style.left = Math.random() * 95 + 'vw';
+        item.style.top = Math.random() * 95 + 'vh';
+        item.style.fontSize = (Math.random() * 15 + 15) + 'px';
+      }
+      
+      container.appendChild(item);
+    }
+
+    function renderCurrentItem() {
+      const container = document.getElementById('readingContainer');
+      container.innerHTML = '';
+
+      // JANGAN buang tanda hubung (-) saat render ke UI
+      const cleanText = currentTargetText.replace(/[.,\/#!$%\^&\*;:{}=_`~()]/g, "");
+      currentTargetWords = cleanText.split(/\s+/).filter(w => w.length > 0);
+      currentTargetIndex = 0; 
+
+      currentTargetWords.forEach((w, index) => {
+        const span = document.createElement('span');
+        span.id = `word-pill-${index}`;
+        span.className = "word-pill px-6 py-4 rounded-3xl font-heading font-bold text-4xl lg:text-5xl cursor-pointer select-none";
+        span.textContent = w;
+        span.onclick = () => speakSingleWord(w); 
+        container.appendChild(span);
+      });
+
+      setStatusBadge("", "");
+      setLiveTranscript("Ketuk mikrofon dan baca berurutan...", "text-slate-400 dark:text-slate-500");
+    }
+
+    function selectLevel(levelKey) {
+      currentLevel = levelKey;
+      currentTargetText = generateDynamicItem(levelKey);
+
+      ['kata', 'frasa', 'kalimat'].forEach(lvl => {
+        const tab = document.getElementById(`tab-${lvl}`);
+        if (!tab) return;
+        tab.className = lvl === levelKey 
+          ? "level-tab flex-1 px-4 py-2.5 rounded-full text-sm font-bold active touch-manipulation whitespace-nowrap" 
+          : "level-tab flex-1 px-4 py-2.5 rounded-full text-sm font-bold inactive touch-manipulation whitespace-nowrap";
+      });
+
+      stopListening();
+      renderCurrentItem();
+    }
+
+    function nextItem() {
+      stopListening();
+      currentTargetText = generateDynamicItem(currentLevel);
+      renderCurrentItem();
+    }
+
+    function setupRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return null;
+
+      const rec = new SpeechRecognition();
+      rec.lang = 'id-ID';
+      rec.continuous = true; 
+      rec.interimResults = true;
+      rec.maxAlternatives = 1;
+
+      rec.onstart = () => {
+        isListening = true;
+        accumulatedTranscript = "";
+        updateMicUi(true);
+        setLiveTranscript("...", "text-brand-500 dark:text-brand-400");
+      };
+
+      rec.onresult = (event) => {
+        let interim = '';
+        let final = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) final += event.results[i][0].transcript + ' ';
+          else interim += event.results[i][0].transcript + ' ';
+        }
+
+        accumulatedTranscript += final;
+        const currentSaid = (accumulatedTranscript + interim).trim();
+        setLiveTranscript(`"${currentSaid}"`, "text-slate-600 dark:text-slate-300 font-bold");
+        evaluateProgressSequential(currentSaid);
+      };
+
+      rec.onerror = (e) => { 
+        if(e.error === 'network') showToast("Browser offline. Gunakan tombol Simulasi.", "error");
+        stopListening(); 
+      };
+      
+      rec.onend = () => { if (isListening) try { rec.start(); } catch(e) { stopListening(); } };
+      return rec;
+    }
+
+    function toggleSpeech() {
+      initAudioContext();
+      if (isListening) { stopListening(); return; }
+      if (!recognition) recognition = setupRecognition();
+      if (!recognition) { showToast("Browser tidak mendukuung mikrofon.", "error"); return; }
+      try { recognition.start(); } catch (err) { stopListening(); }
+    }
+
+    function stopListening() {
+      isListening = false;
+      updateMicUi(false);
+      if (recognition) try { recognition.stop(); } catch (e) {}
+    }
+
+    function evaluateProgressSequential(spokenText) {
+      // Hapus semua tanda baca dari ucapan (strip tetap dibuang dari ucapan agar gampang dicocokkan)
+      const cleanSpoken = spokenText.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=_`~()\-]/g, "");
+      const spokenWords = cleanSpoken.split(/\s+/).filter(w => w.length > 0);
+
+      for (let i = 0; i < spokenWords.length; i++) {
+        if (currentTargetIndex >= currentTargetWords.length) break;
+
+        const expectedRaw = currentTargetWords[currentTargetIndex].toLowerCase();
+        const spoken = spokenWords[i];
+
+        // Validasi Cerdas untuk Kata Ulang (mengandung '-')
+        if (expectedRaw.includes('-')) {
+          const parts = expectedRaw.split('-');
+          const combined = parts.join(""); // "kupu-kupu" -> "kupukupu"
+          
+          // Case 1: Terdengar gabung (kupukupu)
+          if (spoken === combined) {
+            markWordSuccess(); continue;
+          }
+          // Case 2: Terdengar dipisah (kupu kupu)
+          else if (spoken === parts[0] && i + 1 < spokenWords.length && spokenWords[i + 1] === parts[1]) {
+            i++; // Skip next word
+            markWordSuccess(); continue;
+          }
+        } 
+        else {
+          // Kata biasa (tidak ada tanda hubung)
+          if (spoken === expectedRaw) {
+            markWordSuccess(); continue;
+          }
+        }
+      }
+
+      // Update UI warna hijau
+      currentTargetWords.forEach((tw, index) => {
+        const wordEl = document.getElementById(`word-pill-${index}`);
+        if (!wordEl) return;
+        if (index < currentTargetIndex) wordEl.classList.add("correct");
+        else wordEl.classList.remove("correct");
+      });
+
+      // BERHASIL SELURUH KALIMAT!
+      if (currentTargetIndex === currentTargetWords.length && currentTargetWords.length > 0) {
+        handleSuccess();
+      }
+    }
+
+    function markWordSuccess() {
+      currentTargetIndex++;
+      totalScore++;
+      localStorage.setItem('ayobaca_total_score_v5', totalScore);
+      playWordTone();
+      updateScoreUI();
+      spawnBackgroundItem();
+    }
+
+    function handleSuccess() {
+      stopListening();
+      playSuccessTone();
+      triggerConfetti(false);
+      setStatusBadge("BERHASIL", "bg-emerald-500 text-white");
+      setTimeout(() => { nextItem(); }, 2500);
+    }
+
+    function speakTargetText() {
+      if (!synth) return;
+      synth.cancel();
+      const utterance = new SpeechSynthesisUtterance(currentTargetText);
+      utterance.lang = 'id-ID';
+      if (indonesianVoice) utterance.voice = indonesianVoice;
+      utterance.rate = 0.8;
+      synth.speak(utterance);
+    }
+
+    function speakSingleWord(word) {
+      if (!synth) return;
+      synth.cancel();
+      const utterance = new SpeechSynthesisUtterance(word);
+      utterance.lang = 'id-ID';
+      if (indonesianVoice) utterance.voice = indonesianVoice;
+      utterance.rate = 0.75;
+      synth.speak(utterance);
+    }
+
+    function updateMicUi(listening) {
+      const btn = document.getElementById('btnMic');
+      const micLabel = document.getElementById('micLabel');
+      const micIcon = document.getElementById('micIcon');
+      if (listening) {
+        btn.className = "flex-1 max-w-[240px] py-4 rounded-full flex items-center justify-center gap-3 font-heading font-extrabold text-xl transition-all touch-manipulation recording-pulse";
+        micLabel.textContent = "Berhenti";
+        micIcon.className = "ph-bold ph-stop-circle text-2xl";
+      } else {
+        btn.className = "flex-1 max-w-[240px] py-4 bg-brand-600 hover:bg-brand-500 text-white font-heading font-extrabold text-xl rounded-full flex items-center justify-center gap-3 shadow-float transition-all active:scale-95 touch-manipulation";
+        micLabel.textContent = "Mulai Baca";
+        micIcon.className = "ph-bold ph-microphone text-2xl";
+      }
+    }
+
+    function setLiveTranscript(text, colorClass) {
+      const el = document.getElementById('liveTranscript');
+      el.textContent = text;
+      el.className = `text-base font-semibold min-h-[24px] transition-colors ${colorClass}`;
+    }
+    
+    function setStatusBadge(text, colorClasses) {
+      const badge = document.getElementById('statusBadge');
+      if (!text) { badge.classList.add('hidden'); return; }
+      badge.textContent = text;
+      badge.className = `px-5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase mb-2 transition-all ${colorClasses}`;
+      badge.classList.remove('hidden');
+    }
+
+    function simulateReadSuccess() {
+      if (isListening) stopListening();
+      setLiveTranscript("Membaca simulasi...", "text-brand-500");
+      let words = currentTargetText.replace(/[.,\/#!$%\^&\*;:{}=_`~()]/g, "").split(/\s+/);
+      let simulatedSpeech = "";
+      
+      let i = 0;
+      let interval = setInterval(() => {
+        if(i < words.length) {
+          // Format kata simulasi tanpa strip (seperti diucapkan di dunia nyata)
+          simulatedSpeech += words[i].replace(/-/g, "") + " ";
+          setLiveTranscript(`"${simulatedSpeech.trim()}"`, "text-slate-600 dark:text-slate-300 font-bold");
+          evaluateProgressSequential(simulatedSpeech);
+          i++;
+        } else { clearInterval(interval); }
+      }, 500); 
+    }
+
+    function triggerConfetti(mega = false) {
+      if (typeof confetti === 'function') {
+        const count = mega ? 150 : 50;
+        confetti({ particleCount: count, spread: 80, origin: { y: 0.6 }, colors: ['#7c3aed', '#10b981', '#fbbf24'], zIndex: 100 });
+      }
+    }
+
+    function openCustomModal() {
+      const modal = document.getElementById('customModal');
+      const content = document.getElementById('customModalContent');
+      modal.classList.remove('hidden');
+      requestAnimationFrame(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); });
+    }
+
+    function closeCustomModal() {
+      const modal = document.getElementById('customModal');
+      const content = document.getElementById('customModalContent');
+      modal.classList.add('opacity-0');
+      content.classList.add('scale-95');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    function applyCustomText() {
+      const input = document.getElementById('customInput').value.trim();
+      if (!input) return;
+      currentTargetText = input;
+      closeCustomModal();
+      document.querySelectorAll('.level-tab').forEach(tab => { if(tab.tagName === 'BUTTON') { tab.classList.remove('active'); tab.classList.add('inactive'); } });
+      renderCurrentItem();
+    }
+
+    function showToast(message, type) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMessage').textContent = message;
+      toast.className = `fixed bottom-8 left-1/2 transform -translate-x-1/2 opacity-100 translate-y-0 z-50 px-6 py-3 rounded-full shadow-xl font-bold text-sm transition-all duration-400 flex items-center gap-2 pointer-events-none whitespace-nowrap text-white ${type === 'error' ? 'bg-red-500' : 'bg-slate-800'}`;
+      setTimeout(() => { toast.classList.replace('opacity-100', 'opacity-0'); toast.classList.replace('translate-y-0', 'translate-y-24'); }, 3000);
+    }
+
+    // Eksekusi Awal Default Aplikasi
+    window.onload = () => {
+      updateScoreUI();
+      selectLevel('kata'); // SET DEFAULT AWAL KE KATA
+    };
+  </script>
+</body>
+</html>
