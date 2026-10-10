@@ -204,6 +204,11 @@
         <i id="soundIcon" class="ph-bold ph-speaker-high"></i>
       </button>
 
+      <!-- Reset Skor -->
+      <button onclick="confirmResetScore()" class="w-11 h-11 rounded-full bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center justify-center text-xl transition-all active:scale-95 touch-manipulation" title="Reset Skor">
+        <i class="ph-bold ph-arrow-counter-clockwise"></i>
+      </button>
+
       <!-- Panel Gamifikasi -->
       <div id="starCounterWrapper" class="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2.5 rounded-full shadow-sm border border-slate-100 dark:border-slate-700 transition-all duration-300">
         <!-- Diisi oleh JavaScript -->
@@ -323,7 +328,7 @@
       isDark = !isDark;
       localStorage.setItem('ayobaca_theme_v5', isDark ? 'dark' : 'light');
       initTheme();
-      updateBackgroundItems(); // Update ulang bintang di latar sesuai tema
+      updateBackgroundItems(); 
     }
 
     // ==========================================
@@ -387,7 +392,7 @@
       ],
       kalimatTransportasiLogis: [
         { s: ["Pesawat jet", "Pesawat terbang"], p: "terbang", o: ["melaju cepat"], k: ["menuju bandara", "di atas awan", "membelah awan"] },
-        { s: ["Sopir bus"], p: "menjalankan", o: ["kendaraan besar"], k: ["di jalan tol", "menuju luar kota"] },
+        { s: ["Sopir bus"], p: "menjalankan", o: ["kendaraan besar"], k: ["di jalan raya", "menuju luar kota"] },
         { s: ["Masinis"], p: "menjalankan", o: ["kereta api"], k: ["di atas rel", "dengan sangat lancar"] },
         { s: ["Kapal laut"], p: "berlayar", o: ["membelah ombak"], k: ["menuju pelabuhan", "di lautan luas"] }
       ],
@@ -462,6 +467,7 @@
     let currentTargetWords = [];
     let currentTargetIndex = 0; 
     
+    // Ambil Data Persisten atau 0
     let totalScore = parseInt(localStorage.getItem('ayobaca_total_score_v5')) || 0;
     
     let isListening = false;
@@ -489,8 +495,16 @@
 
     ['click', 'touchstart'].forEach(evt => document.addEventListener(evt, initAudioContext, { once: true }));
 
-    function playSuccessTone() {
+    // FIX BUG: Audio mati setelah pakai Web Speech API (TTS)
+    async function ensureAudioResumed() {
+      if (Tone.context && Tone.context.state !== 'running') {
+        try { await Tone.context.resume(); } catch(e) {}
+      }
+    }
+
+    async function playSuccessTone() {
       if (!soundEnabled || !successSynth) return;
+      await ensureAudioResumed();
       try {
         const now = Tone.now();
         successSynth.triggerAttackRelease("C5", "8n", now);
@@ -500,8 +514,9 @@
       } catch (err) {}
     }
     
-    function playWordTone() {
+    async function playWordTone() {
       if (!soundEnabled || !successSynth) return;
+      await ensureAudioResumed();
       try { successSynth.triggerAttackRelease("G5", "16n"); } catch (err) {}
     }
 
@@ -513,11 +528,22 @@
     }
 
     // ==========================================
-    // GAMIFIKASI: HITUNG SKOR MUTLAK & SINKRONISASI LATAR
+    // GAMIFIKASI & SINKRONISASI LATAR (ABSOLUT)
     // ==========================================
+    function confirmResetScore() {
+      if (confirm("Apakah kamu yakin ingin mereset semua bintang, awan, dan bulan kembali ke nol?")) {
+        totalScore = 0;
+        localStorage.setItem('ayobaca_total_score_v5', 0);
+        updateScoreUI();
+        updateBackgroundItems();
+        showToast("Skor telah di-reset!", "info");
+      }
+    }
+
     function updateScoreUI() {
+      // Perhitungan pecahan murni
       const totalClouds = Math.floor(totalScore / 50);
-      const moons = Math.floor(totalClouds / 20); // 1000 bintang = 1 bulan
+      const moons = Math.floor(totalClouds / 20); // 20 awan (1000 kata) = 1 bulan
       const clouds = totalClouds % 20; // Sisa awan
       const stars = totalScore % 50; // Sisa bintang
 
@@ -536,19 +562,18 @@
 
     function updateBackgroundItems() {
       if (!isDark) {
-         document.getElementById('starfield').innerHTML = ''; // Hapus jika mode terang
+         document.getElementById('starfield').innerHTML = ''; 
          return;
       }
       
       const container = document.getElementById('starfield');
       
-      // Target hitungan presisi yang seharusnya tampil
+      // Target presisi berdasarkan skor saat ini
       const totalClouds = Math.floor(totalScore / 50);
       const targetMoons = Math.floor(totalClouds / 20);
       const targetClouds = totalClouds % 20;
       const targetStars = totalScore % 50;
 
-      // Jumlah aktual di layar saat ini
       const currentStars = container.querySelectorAll('.golden-star').length;
       const currentClouds = container.querySelectorAll('.white-cloud').length;
       const currentMoons = container.querySelectorAll('.crescent-moon').length;
@@ -594,7 +619,6 @@
           item.style.fontSize = (Math.random() * 15 + 15) + 'px';
           item.style.left = Math.random() * 95 + 'vw';
           item.style.top = Math.random() * 95 + 'vh';
-          // Acak sedikit delay agar bintang tidak berkedip serentak
           item.style.animationDelay = (Math.random() * 2) + 's';
           container.appendChild(item);
         }
@@ -751,12 +775,11 @@
       localStorage.setItem('ayobaca_total_score_v5', totalScore);
       playWordTone();
       
-      // Ledakan Confetti hanya saat mencapai Milestone besar (tanpa perlu reload UI jika tidak perlu)
       if (totalScore > 0 && totalScore % 1000 === 0) triggerConfetti(true);
       else if (totalScore > 0 && totalScore % 50 === 0) triggerConfetti(false);
       
       updateScoreUI();
-      updateBackgroundItems(); // Sinkronisasikan secara akurat
+      updateBackgroundItems();
     }
 
     function handleSuccess() {
@@ -873,7 +896,7 @@
 
     window.onload = () => {
       updateScoreUI();
-      updateBackgroundItems(); // Muat bintang di awal secara akurat
+      updateBackgroundItems(); 
       selectLevel('kata'); 
     };
   </script>
