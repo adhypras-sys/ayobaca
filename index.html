@@ -466,6 +466,7 @@
     let currentTargetText = '';
     let currentTargetWords = [];
     let currentTargetIndex = 0; 
+    let hasCompletedItem = false; // FLAG BUG: Cegah suara acak pemicu ganda
     
     // Ambil Data Persisten atau 0
     let totalScore = parseInt(localStorage.getItem('ayobaca_total_score_v5')) || 0;
@@ -495,7 +496,7 @@
 
     ['click', 'touchstart'].forEach(evt => document.addEventListener(evt, initAudioContext, { once: true }));
 
-    // FIX BUG: Audio mati setelah pakai Web Speech API (TTS)
+    // FIX BUG: Paksa web audio menyala jika dimatikan browser
     async function ensureAudioResumed() {
       if (Tone.context && Tone.context.state !== 'running') {
         try { await Tone.context.resume(); } catch(e) {}
@@ -632,6 +633,7 @@
     // INTI LOGIKA APLIKASI
     // ==========================================
     function renderCurrentItem() {
+      hasCompletedItem = false; // Reset kuncian item baru
       const container = document.getElementById('readingContainer');
       container.innerHTML = '';
 
@@ -692,6 +694,8 @@
       };
 
       rec.onresult = (event) => {
+        if (hasCompletedItem) return; // Jika sudah berhasil, abaikan suara sisa
+        
         let interim = '';
         let final = '';
         for (let i = event.resultIndex; i < event.results.length; ++i) {
@@ -710,7 +714,7 @@
         stopListening(); 
       };
       
-      rec.onend = () => { if (isListening) try { rec.start(); } catch(e) { stopListening(); } };
+      rec.onend = () => { if (isListening && !hasCompletedItem) try { rec.start(); } catch(e) { stopListening(); } };
       return rec;
     }
 
@@ -729,6 +733,8 @@
     }
 
     function evaluateProgressSequential(spokenText) {
+      if (hasCompletedItem) return; // FIX: Blokir pemicu ganda
+      
       const cleanSpoken = spokenText.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=_`~()\-]/g, "");
       const spokenWords = cleanSpoken.split(/\s+/).filter(w => w.length > 0);
 
@@ -765,6 +771,7 @@
       });
 
       if (currentTargetIndex === currentTargetWords.length && currentTargetWords.length > 0) {
+        hasCompletedItem = true; // Tandai berhasil agar loop berhenti
         handleSuccess();
       }
     }
@@ -783,14 +790,16 @@
     }
 
     function handleSuccess() {
-      stopListening();
+      stopListening(); // Matikan mic segera
       playSuccessTone();
       triggerConfetti(false);
       setStatusBadge("BERHASIL", "bg-emerald-500 text-white");
       setTimeout(() => { nextItem(); }, 2500);
     }
 
+    // FIX AUDIO IOS: Matikan Mic sebelum TTS jalan agar tidak bentrok
     function speakTargetText() {
+      if (isListening) stopListening(); // Paksa matikan sesi record iOS
       if (!synth) return;
       synth.cancel();
       const utterance = new SpeechSynthesisUtterance(currentTargetText);
@@ -801,6 +810,7 @@
     }
 
     function speakSingleWord(word) {
+      if (isListening) stopListening(); // Paksa matikan sesi record iOS
       if (!synth) return;
       synth.cancel();
       const utterance = new SpeechSynthesisUtterance(word);
@@ -841,6 +851,7 @@
 
     function simulateReadSuccess() {
       if (isListening) stopListening();
+      hasCompletedItem = false;
       setLiveTranscript("Membaca simulasi...", "text-brand-500 dark:text-brand-400");
       let words = currentTargetText.replace(/[.,\/#!$%\^&\*;:{}=_`~()]/g, "").split(/\s+/);
       let simulatedSpeech = "";
