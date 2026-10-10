@@ -54,19 +54,25 @@
       -webkit-tap-highlight-color: transparent;
       user-select: none; 
       overflow-x: hidden;
+      /* Background biru langit cerah untuk tema terang */
+      background-color: #e0f2fe; 
       transition: background-color 0.5s ease, color 0.5s ease;
     }
     
-    /* Background Blur Blobs */
+    .dark body {
+      background-color: #0b132b;
+    }
+
+    /* Background Blur Blobs - Tema Terang (Premium Sky Blue) */
     .bg-blobs {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       z-index: -1;
       overflow: hidden;
-      background: radial-gradient(circle at 15% 50%, rgba(232, 228, 253, 0.8), transparent 30%),
-                  radial-gradient(circle at 85% 30%, rgba(253, 228, 228, 0.7), transparent 30%),
-                  radial-gradient(circle at 50% 80%, rgba(228, 253, 233, 0.6), transparent 30%);
-      filter: blur(50px);
+      background: radial-gradient(circle at 20% 40%, rgba(255, 255, 255, 0.8), transparent 45%),
+                  radial-gradient(circle at 80% 60%, rgba(186, 230, 253, 0.9), transparent 45%),
+                  radial-gradient(circle at 50% 90%, rgba(240, 249, 255, 0.9), transparent 45%);
+      filter: blur(40px);
       transition: all 0.5s ease;
     }
 
@@ -77,7 +83,7 @@
                   radial-gradient(circle at 50% 80%, rgba(6, 78, 59, 0.15), transparent 40%);
     }
 
-    /* Container Latar Belakang (Bintang, Awan, Bulan) */
+    /* Container Latar Belakang (Bintang/Balon, Awan, Bulan/Matahari) */
     #starfield {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -96,15 +102,30 @@
       from { transform: translateY(0px) rotate(0deg); }
       to { transform: translateY(-15px) rotate(5deg); }
     }
+    
+    @keyframes floatBalloon {
+      from { transform: translateY(0px) rotate(-5deg); }
+      to { transform: translateY(-30px) rotate(5deg); }
+    }
 
     .pop-in-anim {
       animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, floatItem 3s ease-in-out infinite alternate;
       opacity: 0;
     }
     
+    /* Efek Tema Terang (Balon & Matahari) */
+    .colorful-balloon { 
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+      animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, floatBalloon 4s ease-in-out infinite alternate;
+    }
+    .bright-sun { filter: drop-shadow(0 0 35px rgba(250, 204, 21, 0.9)); }
+    
+    /* Efek Tema Gelap (Bintang & Bulan) */
     .golden-star { filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.9)); }
-    .white-cloud { filter: drop-shadow(0 0 15px rgba(203, 213, 225, 0.7)); }
     .crescent-moon { filter: drop-shadow(0 0 25px rgba(147, 197, 253, 0.9)); }
+    
+    /* Awan - Universal */
+    .white-cloud { filter: drop-shadow(0 0 15px rgba(203, 213, 225, 0.7)); }
 
     /* Frosted Glass Main Card - Sangat Bening */
     .main-card {
@@ -116,8 +137,8 @@
     }
 
     .dark .main-card {
-      background: rgba(11, 19, 43, 0.15); /* Transparansi sangat tinggi */
-      backdrop-filter: blur(2px); /* Blur super rendah agar bintang tajam */
+      background: rgba(11, 19, 43, 0.15); 
+      backdrop-filter: blur(2px); 
       -webkit-backdrop-filter: blur(2px);
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
@@ -177,7 +198,7 @@
     }
   </style>
 </head>
-<body class="min-h-[100dvh] flex flex-col justify-between font-sans bg-slate-50 text-slate-800 dark:bg-[#0b132b] dark:text-slate-100 transition-colors duration-500">
+<body class="min-h-[100dvh] flex flex-col justify-between font-sans text-slate-800 dark:text-slate-100 transition-colors duration-500">
 
   <!-- Latar Belakang -->
   <div class="bg-blobs"></div>
@@ -308,7 +329,7 @@
 
   <script>
     // ==========================================
-    // TEMA & WARNA LATAR BELAKANG
+    // TEMA: TERANG & GELAP (CERDAS)
     // ==========================================
     let savedTheme = localStorage.getItem('ayobaca_theme_v5');
     let isDark = savedTheme !== null ? savedTheme === 'dark' : true; 
@@ -328,6 +349,10 @@
       isDark = !isDark;
       localStorage.setItem('ayobaca_theme_v5', isDark ? 'dark' : 'light');
       initTheme();
+      
+      // Bersihkan langit agar objek terganti total saat pindah tema (Balon <-> Bintang)
+      document.getElementById('starfield').innerHTML = ''; 
+      updateScoreUI(); 
       updateBackgroundItems(); 
     }
 
@@ -466,7 +491,7 @@
     let currentTargetText = '';
     let currentTargetWords = [];
     let currentTargetIndex = 0; 
-    let hasCompletedItem = false; // FLAG BUG: Cegah suara acak pemicu ganda
+    let hasCompletedItem = false; 
     
     // Ambil Data Persisten atau 0
     let totalScore = parseInt(localStorage.getItem('ayobaca_total_score_v5')) || 0;
@@ -496,7 +521,7 @@
 
     ['click', 'touchstart'].forEach(evt => document.addEventListener(evt, initAudioContext, { once: true }));
 
-    // FIX BUG: Paksa web audio menyala jika dimatikan browser
+    // FIX BUG: Paksa web audio menyala jika dimatikan browser (setelah Text-to-Speech berjalan)
     async function ensureAudioResumed() {
       if (Tone.context && Tone.context.state !== 'running') {
         try { await Tone.context.resume(); } catch(e) {}
@@ -505,7 +530,7 @@
 
     async function playSuccessTone() {
       if (!soundEnabled || !successSynth) return;
-      await ensureAudioResumed();
+      await ensureAudioResumed(); // Selalu pastikan Context aktif
       try {
         const now = Tone.now();
         successSynth.triggerAttackRelease("C5", "8n", now);
@@ -517,7 +542,7 @@
     
     async function playWordTone() {
       if (!soundEnabled || !successSynth) return;
-      await ensureAudioResumed();
+      await ensureAudioResumed(); // Selalu pastikan Context aktif
       try { successSynth.triggerAttackRelease("G5", "16n"); } catch (err) {}
     }
 
@@ -532,7 +557,7 @@
     // GAMIFIKASI & SINKRONISASI LATAR (ABSOLUT)
     // ==========================================
     function confirmResetScore() {
-      if (confirm("Apakah kamu yakin ingin mereset semua bintang, awan, dan bulan kembali ke nol?")) {
+      if (confirm("Apakah kamu yakin ingin mereset semua pencapaian (bintang, awan, bulan) kembali ke nol?")) {
         totalScore = 0;
         localStorage.setItem('ayobaca_total_score_v5', 0);
         updateScoreUI();
@@ -544,16 +569,20 @@
     function updateScoreUI() {
       // Perhitungan pecahan murni
       const totalClouds = Math.floor(totalScore / 50);
-      const moons = Math.floor(totalClouds / 20); // 20 awan (1000 kata) = 1 bulan
+      const moons = Math.floor(totalClouds / 20); // 20 awan (1000 kata) = 1 bulan/matahari
       const clouds = totalClouds % 20; // Sisa awan
-      const stars = totalScore % 50; // Sisa bintang
+      const stars = totalScore % 50; // Sisa bintang/balon
+
+      // Pilih Ikon Berdasarkan Tema
+      const iconMoon = isDark ? "ph-moon text-blue-300" : "ph-sun text-amber-500";
+      const iconStar = isDark ? "ph-star text-amber-400" : "ph-balloon text-rose-400";
 
       let html = '';
-      if (moons > 0) html += `<div class="flex items-center gap-1.5"><i class="ph-fill ph-moon text-blue-300 text-xl"></i><span class="font-bold">${moons}</span></div>`;
+      if (moons > 0) html += `<div class="flex items-center gap-1.5"><i class="ph-fill ${iconMoon} text-xl"></i><span class="font-bold">${moons}</span></div>`;
       if (clouds > 0 || moons > 0) html += `<div class="flex items-center gap-1.5"><i class="ph-fill ph-cloud text-slate-300 text-xl"></i><span class="font-bold">${clouds}</span></div>`;
-      html += `<div class="flex items-center gap-1.5"><i class="ph-fill ph-star text-amber-400 text-xl"></i><span class="font-bold">${stars}</span></div>`;
+      html += `<div class="flex items-center gap-1.5"><i class="ph-fill ${iconStar} text-xl"></i><span class="font-bold">${stars}</span></div>`;
       
-      html = html.replace(/<\/div><div/g, '</div><div class="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1"></div><div');
+      html = html.replace(/<\/div><div/g, '</div><div class="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></div><div');
 
       const wrapper = document.getElementById('starCounterWrapper');
       wrapper.innerHTML = html;
@@ -562,11 +591,6 @@
     }
 
     function updateBackgroundItems() {
-      if (!isDark) {
-         document.getElementById('starfield').innerHTML = ''; 
-         return;
-      }
-      
       const container = document.getElementById('starfield');
       
       // Target presisi berdasarkan skor saat ini
@@ -575,23 +599,24 @@
       const targetClouds = totalClouds % 20;
       const targetStars = totalScore % 50;
 
-      const currentStars = container.querySelectorAll('.golden-star').length;
-      const currentClouds = container.querySelectorAll('.white-cloud').length;
-      const currentMoons = container.querySelectorAll('.crescent-moon').length;
+      // Class dinamis yang mendeteksi elemen saat ini
+      const currentMoons = container.querySelectorAll('.milestone-moon').length;
+      const currentClouds = container.querySelectorAll('.milestone-cloud').length;
+      const currentStars = container.querySelectorAll('.milestone-star').length;
 
-      // SINKRONISASI BULAN SABIT
+      // SINKRONISASI BULAN SABIT / MATAHARI
       if (currentMoons < targetMoons) {
         for(let i = 0; i < (targetMoons - currentMoons); i++) {
           const item = document.createElement('i');
-          item.className = "ph-fill ph-moon crescent-moon absolute pop-in-anim";
-          item.style.color = "#93c5fd"; 
+          const moonClass = isDark ? 'ph-moon crescent-moon text-blue-300' : 'ph-sun bright-sun text-amber-400';
+          item.className = `ph-fill milestone-moon absolute pop-in-anim ${moonClass}`;
           item.style.fontSize = "150px";
           item.style.left = (15 + Math.random() * 70) + 'vw';
           item.style.top = (15 + Math.random() * 50) + 'vh';
           container.appendChild(item);
         }
       } else if (currentMoons > targetMoons) {
-        const moons = container.querySelectorAll('.crescent-moon');
+        const moons = container.querySelectorAll('.milestone-moon');
         for(let i = 0; i < (currentMoons - targetMoons); i++) if(moons[i]) moons[i].remove();
       }
 
@@ -599,7 +624,7 @@
       if (currentClouds < targetClouds) {
         for(let i = 0; i < (targetClouds - currentClouds); i++) {
           const item = document.createElement('i');
-          item.className = "ph-fill ph-cloud white-cloud absolute pop-in-anim";
+          item.className = "ph-fill ph-cloud milestone-cloud white-cloud absolute pop-in-anim";
           item.style.color = "#cbd5e1"; 
           item.style.fontSize = "120px";
           item.style.left = (10 + Math.random() * 80) + 'vw';
@@ -607,24 +632,31 @@
           container.appendChild(item);
         }
       } else if (currentClouds > targetClouds) {
-        const clouds = container.querySelectorAll('.white-cloud');
+        const clouds = container.querySelectorAll('.milestone-cloud');
         for(let i = 0; i < (currentClouds - targetClouds); i++) if(clouds[i]) clouds[i].remove();
       }
 
-      // SINKRONISASI BINTANG
+      // SINKRONISASI BINTANG / BALON
+      const balloonColors = ['#f43f5e', '#3b82f6', '#10b981', '#f59e0b', '#d946ef']; // rose, blue, emerald, amber, fuchsia
       if (currentStars < targetStars) {
         for(let i = 0; i < (targetStars - currentStars); i++) {
           const item = document.createElement('i');
-          item.className = "ph-fill ph-star golden-star absolute pop-in-anim";
-          item.style.color = "#fbbf24";
-          item.style.fontSize = (Math.random() * 15 + 15) + 'px';
+          if (isDark) {
+            item.className = "ph-fill ph-star milestone-star golden-star absolute pop-in-anim";
+            item.style.color = "#fbbf24";
+            item.style.fontSize = (Math.random() * 15 + 15) + 'px';
+          } else {
+            item.className = "ph-fill ph-balloon milestone-star colorful-balloon absolute pop-in-anim";
+            item.style.color = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+            item.style.fontSize = (Math.random() * 20 + 25) + 'px'; // Balon dibuat sedikit lebih besar
+          }
           item.style.left = Math.random() * 95 + 'vw';
           item.style.top = Math.random() * 95 + 'vh';
           item.style.animationDelay = (Math.random() * 2) + 's';
           container.appendChild(item);
         }
       } else if (currentStars > targetStars) {
-        const stars = container.querySelectorAll('.golden-star');
+        const stars = container.querySelectorAll('.milestone-star');
         for(let i = 0; i < (currentStars - targetStars); i++) if(stars[i]) stars[i].remove();
       }
     }
@@ -633,7 +665,7 @@
     // INTI LOGIKA APLIKASI
     // ==========================================
     function renderCurrentItem() {
-      hasCompletedItem = false; // Reset kuncian item baru
+      hasCompletedItem = false; 
       const container = document.getElementById('readingContainer');
       container.innerHTML = '';
 
@@ -694,7 +726,7 @@
       };
 
       rec.onresult = (event) => {
-        if (hasCompletedItem) return; // Jika sudah berhasil, abaikan suara sisa
+        if (hasCompletedItem) return; 
         
         let interim = '';
         let final = '';
@@ -733,7 +765,7 @@
     }
 
     function evaluateProgressSequential(spokenText) {
-      if (hasCompletedItem) return; // FIX: Blokir pemicu ganda
+      if (hasCompletedItem) return; 
       
       const cleanSpoken = spokenText.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=_`~()\-]/g, "");
       const spokenWords = cleanSpoken.split(/\s+/).filter(w => w.length > 0);
@@ -771,7 +803,7 @@
       });
 
       if (currentTargetIndex === currentTargetWords.length && currentTargetWords.length > 0) {
-        hasCompletedItem = true; // Tandai berhasil agar loop berhenti
+        hasCompletedItem = true; 
         handleSuccess();
       }
     }
@@ -790,7 +822,7 @@
     }
 
     function handleSuccess() {
-      stopListening(); // Matikan mic segera
+      stopListening(); 
       playSuccessTone();
       triggerConfetti(false);
       setStatusBadge("BERHASIL", "bg-emerald-500 text-white");
@@ -799,25 +831,29 @@
 
     // FIX AUDIO IOS: Matikan Mic sebelum TTS jalan agar tidak bentrok
     function speakTargetText() {
-      if (isListening) stopListening(); // Paksa matikan sesi record iOS
-      if (!synth) return;
-      synth.cancel();
-      const utterance = new SpeechSynthesisUtterance(currentTargetText);
-      utterance.lang = 'id-ID';
-      if (indonesianVoice) utterance.voice = indonesianVoice;
-      utterance.rate = 0.8;
-      synth.speak(utterance);
+      if (isListening) stopListening(); 
+      setTimeout(() => { // Beri jeda kecil agar iOS melepaskan mic
+        if (!synth) return;
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(currentTargetText);
+        utterance.lang = 'id-ID';
+        if (indonesianVoice) utterance.voice = indonesianVoice;
+        utterance.rate = 0.8;
+        synth.speak(utterance);
+      }, 100);
     }
 
     function speakSingleWord(word) {
-      if (isListening) stopListening(); // Paksa matikan sesi record iOS
-      if (!synth) return;
-      synth.cancel();
-      const utterance = new SpeechSynthesisUtterance(word);
-      utterance.lang = 'id-ID';
-      if (indonesianVoice) utterance.voice = indonesianVoice;
-      utterance.rate = 0.75;
-      synth.speak(utterance);
+      if (isListening) stopListening(); 
+      setTimeout(() => {
+        if (!synth) return;
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = 'id-ID';
+        if (indonesianVoice) utterance.voice = indonesianVoice;
+        utterance.rate = 0.75;
+        synth.speak(utterance);
+      }, 100);
     }
 
     function updateMicUi(listening) {
@@ -870,7 +906,7 @@
     function triggerConfetti(mega = false) {
       if (typeof confetti === 'function') {
         const count = mega ? 150 : 50;
-        confetti({ particleCount: count, spread: 80, origin: { y: 0.6 }, colors: ['#7c3aed', '#10b981', '#fbbf24'], zIndex: 100 });
+        confetti({ particleCount: count, spread: 80, origin: { y: 0.6 }, colors: ['#7c3aed', '#10b981', '#fbbf24', '#f43f5e', '#3b82f6'], zIndex: 100 });
       }
     }
 
