@@ -6,9 +6,14 @@
   <meta name="theme-color" content="#0b132b">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Ayo Baca - Edisi Ultimate</title>
+  <title>Ayo Baca & Belajar - Edisi Ultimate 4-in-1</title>
   
-  <!-- Tailwind CSS (Opsional jika online/cached, dilengkapi CSS Offline Fallback di bawah) -->
+  <!-- Google Fonts: Plus Jakarta Sans (Clean & Modern Geometric Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS (Dilengkapi CSS Offline Fallback di bawah) -->
   <script src="https://cdn.tailwindcss.com"></script>
   
   <script>
@@ -18,8 +23,8 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Nunito', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
-              heading: ['Outfit', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+              sans: ['"Google Sans"', '"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+              heading: ['"Google Sans"', '"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
             },
             colors: {
               brand: {
@@ -53,7 +58,12 @@
       user-select: none;
       -webkit-user-select: none;
       overflow-x: hidden;
-      font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      touch-action: manipulation;
+      overscroll-behavior-y: none;
+      font-family: 'Google Sans', 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      letter-spacing: -0.015em;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       background-color: #e0f2fe;
       color: #1e293b;
       transition: background-color 0.5s ease, color 0.5s ease;
@@ -64,7 +74,6 @@
       color: #f1f5f9;
     }
 
-    /* Offline Layout Fallbacks (Berjaga jika CDN Tailwind tidak termuat saat 100% offline) */
     .app-shell {
       min-height: 100dvh;
       display: flex;
@@ -73,6 +82,7 @@
       position: relative;
     }
 
+    /* Latar Belakang Blob Halus */
     .bg-blobs {
       position: fixed;
       inset: 0;
@@ -127,6 +137,25 @@
       to { transform: translate3d(0, -26px, 0) rotate(4deg); }
     }
 
+    @keyframes slideUpFade {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes gentleShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .animate-view {
+      animation: slideUpFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .animate-shake {
+      animation: gentleShake 0.35s ease-in-out;
+    }
+
     .sky-item {
       position: absolute;
       will-change: transform, opacity;
@@ -144,6 +173,7 @@
     .crescent-moon { filter: drop-shadow(0 0 25px rgba(147, 197, 253, 0.9)); }
     .white-cloud { filter: drop-shadow(0 6px 16px rgba(148, 163, 184, 0.45)); }
 
+    /* Kartu Utama Bening (Translucent) agar Latar Langit Terlihat Jelas */
     .main-card {
       background: rgba(255, 255, 255, 0.28);
       backdrop-filter: blur(2.5px);
@@ -161,8 +191,8 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
     }
 
-    /* Word Pills 3D Interaktif */
-    .word-pill {
+    /* Word Pills & Tombol 3D Interaktif */
+    .word-pill, .btn-3d {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -170,29 +200,30 @@
       border: 2px solid #cbd5e1;
       color: #1e293b;
       box-shadow: 0 5px 0 0 #cbd5e1;
-      transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+      transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
                   background-color 0.2s ease,
                   border-color 0.2s ease,
                   color 0.2s ease,
-                  box-shadow 0.15s ease;
+                  box-shadow 0.12s ease,
+                  opacity 0.2s ease;
       touch-action: manipulation;
       word-break: break-word;
       transform: translateY(0);
       cursor: pointer;
     }
 
-    html.dark .word-pill {
+    html.dark .word-pill, html.dark .btn-3d {
       background-color: rgba(30, 41, 59, 0.92);
       border-color: #334155;
       color: #f8fafc;
       box-shadow: 0 5px 0 0 #334155;
     }
 
-    .word-pill:hover {
+    .word-pill:hover, .btn-3d:hover:not(:disabled) {
       border-color: #8b5cf6;
     }
 
-    .word-pill:active {
+    .word-pill:active, .btn-3d:active:not(:disabled) {
       transform: translateY(5px);
       box-shadow: 0 0px 0 0 transparent !important;
     }
@@ -207,29 +238,61 @@
       box-shadow: 0 5px 0 0 #7c3aed, 0 0 18px rgba(167, 139, 250, 0.3);
     }
 
-    .word-pill.correct {
+    .word-pill.correct, .btn-3d-emerald {
       background-color: #10b981 !important;
       border-color: #059669 !important;
       color: #ffffff !important;
+      box-shadow: 0 5px 0 0 #059669 !important;
+    }
+
+    .word-pill.correct {
       box-shadow: 0 0px 0 0 #059669 !important;
       transform: translateY(5px);
     }
 
-    .level-tab {
+    .word-pill.wrong-shake {
+      background-color: #f43f5e !important;
+      border-color: #e11d48 !important;
+      color: #ffffff !important;
+      box-shadow: 0 5px 0 0 #be123c !important;
+      animation: gentleShake 0.35s ease-in-out;
+    }
+
+    .btn-3d-rose {
+      background-color: #f43f5e !important;
+      border-color: #e11d48 !important;
+      color: #ffffff !important;
+      box-shadow: 0 5px 0 0 #be123c !important;
+    }
+
+    .btn-3d-brand {
+      background-color: #7c3aed !important;
+      border-color: #6d28d9 !important;
+      color: #ffffff !important;
+      box-shadow: 0 5px 0 0 #5b21b6 !important;
+    }
+
+    .tile-used {
+      opacity: 0;
+      transform: scale(0.5);
+      pointer-events: none;
+    }
+
+    .level-tab, .mode-tab {
       transition: all 0.25s ease;
       cursor: pointer;
       border: none;
     }
-    .level-tab.active {
+    .level-tab.active, .mode-tab.active {
       background-color: #7c3aed;
       color: #ffffff;
       box-shadow: 0 4px 15px -3px rgba(124, 58, 237, 0.45);
     }
-    .level-tab.inactive {
+    .level-tab.inactive, .mode-tab.inactive {
       background-color: transparent;
       color: #475569;
     }
-    html.dark .level-tab.inactive {
+    html.dark .level-tab.inactive, html.dark .mode-tab.inactive {
       color: #94a3b8;
     }
     
@@ -251,6 +314,9 @@
       vertical-align: middle;
       flex-shrink: 0;
     }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="app-shell font-sans text-slate-800 dark:text-slate-100">
@@ -259,34 +325,35 @@
   <div id="starfield" aria-hidden="true"></div>
   <canvas id="confettiCanvas" aria-hidden="true"></canvas>
 
-  <header class="w-full max-w-5xl mx-auto px-4 sm:px-6 pt-4 sm:pt-6 flex flex-wrap items-center justify-between gap-3 z-10 relative">
-    <!-- Brand Logo -->
-    <div class="flex items-center gap-2.5 sm:gap-3">
-      <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-slate-800/90 rounded-2xl flex items-center justify-center shadow-sm border border-slate-200/80 dark:border-slate-700 text-brand-600 dark:text-brand-400 text-xl sm:text-2xl flex-shrink-0 transition-colors">
+  <!-- HEADER UTAMA -->
+  <header class="w-full max-w-5xl mx-auto px-3 sm:px-6 pt-3.5 sm:pt-5 flex flex-wrap items-center justify-between gap-2 z-20 relative">
+    <!-- Brand Logo & Tombol Beranda -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <button type="button" onclick="switchGameMode('home')" title="Kembali ke Menu Utama" aria-label="Menu Utama" class="w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-slate-800/90 hover:bg-brand-50 dark:hover:bg-slate-700 rounded-2xl flex items-center justify-center shadow-sm border border-slate-200/80 dark:border-slate-700 text-brand-600 dark:text-brand-400 text-xl sm:text-2xl flex-shrink-0 transition-all active:scale-95 cursor-pointer">
         <svg class="icon-svg" viewBox="0 0 256 256" fill="currentColor">
           <path d="M224,48H160a40,40,0,0,0-32,16A40,40,0,0,0,96,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H96a24,24,0,0,1,24,24,8,8,0,0,0,16,0,24,24,0,0,1,24-24h64a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48ZM96,192H32V64H96a24,24,0,0,1,24,24V200A39.81,39.81,0,0,0,96,192Zm128,0H160a39.81,39.81,0,0,0-24,8V88a24,24,0,0,1,24-24h64Z"/>
         </svg>
-      </div>
-      <div>
-        <h1 class="text-xl sm:text-2xl font-heading font-extrabold tracking-tight leading-none">Ayo Baca</h1>
-        <span id="offlineIndicator" class="text-[11px] font-bold text-slate-500 dark:text-slate-400 hidden sm:inline-block">Edisi Ultimate • Siap Offline</span>
+      </button>
+      <div class="cursor-pointer" onclick="switchGameMode('home')">
+        <h1 class="text-lg sm:text-2xl font-heading font-extrabold tracking-tight leading-none">Ayo Baca & Belajar</h1>
+        <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 hidden sm:inline-block">4 Permainan Edukasi • Siap Offline</span>
       </div>
     </div>
 
     <!-- Action Controls & Gamification Counter -->
     <div class="flex items-center gap-1.5 sm:gap-2.5 ml-auto">
       <!-- Toggle Tema -->
-      <button type="button" onclick="toggleTheme()" aria-label="Ganti Tema" title="Ganti Tema Siang/Malam" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/90 dark:bg-slate-800/90 shadow-sm border border-slate-200/80 dark:border-slate-700 flex items-center justify-center text-lg sm:text-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all active:scale-95 touch-manipulation cursor-pointer">
+      <button type="button" onclick="toggleTheme()" aria-label="Ganti Tema" title="Ganti Tema Siang/Malam" class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/90 dark:bg-slate-800/90 shadow-sm border border-slate-200/80 dark:border-slate-700 flex items-center justify-center text-base sm:text-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all active:scale-95 touch-manipulation cursor-pointer">
         <span id="themeIconContainer" class="flex items-center justify-center"></span>
       </button>
 
       <!-- Toggle Suara -->
-      <button type="button" id="btnSoundToggle" onclick="toggleMute()" aria-label="Pengaturan Suara" title="Suara Efek" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/90 dark:bg-slate-800/90 shadow-sm border border-slate-200/80 dark:border-slate-700 text-brand-600 dark:text-brand-400 flex items-center justify-center text-lg sm:text-xl transition-all active:scale-95 touch-manipulation cursor-pointer">
+      <button type="button" id="btnSoundToggle" onclick="toggleMute()" aria-label="Pengaturan Suara" title="Suara Efek" class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/90 dark:bg-slate-800/90 shadow-sm border border-slate-200/80 dark:border-slate-700 text-brand-600 dark:text-brand-400 flex items-center justify-center text-base sm:text-xl transition-all active:scale-95 touch-manipulation cursor-pointer">
         <span id="soundIconContainer" class="flex items-center justify-center"></span>
       </button>
 
-      <!-- Reset Skor (Membuka Modal Kustom, Bukan confirm() bawaan) -->
-      <button type="button" onclick="openResetModal()" aria-label="Reset Skor" title="Reset Skor ke Nol" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/90 dark:bg-slate-800/90 shadow-sm border border-slate-200/80 dark:border-slate-700 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 flex items-center justify-center text-lg sm:text-xl transition-all active:scale-95 touch-manipulation cursor-pointer">
+      <!-- Reset Skor (Membuka Modal Kustom) -->
+      <button type="button" onclick="openResetModal()" aria-label="Reset Skor" title="Reset Skor ke Nol" class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/90 dark:bg-slate-800/90 shadow-sm border border-slate-200/80 dark:border-slate-700 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 flex items-center justify-center text-base sm:text-xl transition-all active:scale-95 touch-manipulation cursor-pointer">
         <svg class="icon-svg" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="32 104 32 56 80 56"/>
           <path d="M65.77,190.23a88,88,0,1,0,0-124.46L32,99"/>
@@ -294,101 +361,281 @@
       </button>
 
       <!-- Panel Gamifikasi -->
-      <div id="starCounterWrapper" class="flex items-center gap-1.5 sm:gap-2 bg-white/90 dark:bg-slate-800/90 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full shadow-sm border border-slate-200/80 dark:border-slate-700 text-sm sm:text-base transition-transform duration-300">
+      <div id="starCounterWrapper" class="flex items-center gap-1.5 sm:gap-2 bg-white/90 dark:bg-slate-800/90 px-3 sm:px-4 py-1.5 sm:py-2.5 rounded-full shadow-sm border border-slate-200/80 dark:border-slate-700 text-xs sm:text-base transition-transform duration-300">
         <!-- Diisi oleh JavaScript -->
       </div>
     </div>
   </header>
 
-  <main class="w-full max-w-4xl mx-auto px-3 sm:px-6 py-4 sm:py-8 flex-1 flex flex-col items-center justify-center z-10 relative">
-
-    <!-- Navigasi Level Kategori -->
-    <nav aria-label="Pilih Tingkat Bacaan" class="w-full max-w-md sm:max-w-lg bg-white/40 dark:bg-slate-900/40 backdrop-blur-sm p-1.5 rounded-full shadow-sm border border-white/60 dark:border-white/10 flex items-center justify-between mb-5 sm:mb-7 relative transition-colors">
-      <button type="button" onclick="selectLevel('kata')" id="tab-kata" class="level-tab flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-sm font-bold active touch-manipulation whitespace-nowrap">
-        Kata
+  <!-- BAR NAVIGASI CEPAT 4 PERMAINAN -->
+  <div class="w-full max-w-3xl mx-auto px-3 sm:px-6 pt-3 z-20 relative">
+    <nav aria-label="Pilih Permainan" class="w-full bg-white/45 dark:bg-slate-900/45 backdrop-blur-sm p-1.5 rounded-full shadow-sm border border-white/60 dark:border-white/10 flex items-center justify-between gap-1 overflow-x-auto no-scrollbar">
+      <button type="button" onclick="switchGameMode('home')" id="nav-home" class="mode-tab px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold inactive flex items-center justify-center gap-1.5 whitespace-nowrap">
+        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Menu</span>
       </button>
-      <button type="button" onclick="selectLevel('frasa')" id="tab-frasa" class="level-tab flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-sm font-bold inactive touch-manipulation whitespace-nowrap">
-        Frasa
+      <button type="button" onclick="switchGameMode('ayobaca')" id="nav-ayobaca" class="mode-tab flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold active flex items-center justify-center gap-1.5 whitespace-nowrap">
+        <span>🎙️ Ayo Baca</span>
       </button>
-      <button type="button" onclick="selectLevel('kalimat')" id="tab-kalimat" class="level-tab flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-sm font-bold inactive touch-manipulation whitespace-nowrap">
-        Kalimat
+      <button type="button" onclick="switchGameMode('math')" id="nav-math" class="mode-tab flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold inactive flex items-center justify-center gap-1.5 whitespace-nowrap">
+        <span>🔢 Matematika</span>
       </button>
-      <div class="w-px h-6 bg-slate-300/60 dark:bg-slate-600/60 mx-1"></div>
-      <button type="button" onclick="openCustomModal()" id="tab-custom" title="Tulis Kalimat Sendiri" class="level-tab px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full text-sm font-bold inactive touch-manipulation flex justify-center items-center gap-1.5 group whitespace-nowrap">
-        <svg class="icon-svg group-hover:text-brand-500 transition-colors" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M92.69,216H48a8,8,0,0,1-8-8V163.31a8,8,0,0,1,2.34-5.65L165.66,34.34a8,8,0,0,1,11.31,0L221.66,79a8,8,0,0,1,0,11.31L98.34,213.66A8,8,0,0,1,92.69,216Z"/>
-          <line x1="136" y1="64" x2="192" y2="120"/>
-        </svg>
-        <span class="hidden sm:inline text-xs">Tulis</span>
+      <button type="button" onclick="switchGameMode('reading_id')" id="nav-reading_id" class="mode-tab flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold inactive flex items-center justify-center gap-1.5 whitespace-nowrap">
+        <span>🧩 Susun Kata</span>
+      </button>
+      <button type="button" onclick="switchGameMode('reading_en')" id="nav-reading_en" class="mode-tab flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold inactive flex items-center justify-center gap-1.5 whitespace-nowrap">
+        <span>🌍 English</span>
       </button>
     </nav>
+  </div>
 
-    <!-- Kanvas Area Membaca (Glass Card Bening) -->
-    <section class="w-full main-card rounded-[2rem] sm:rounded-[2.5rem] p-5 sm:p-10 md:p-12 flex flex-col items-center relative z-10">
-      
-      <!-- Instruksi Maskot & Bantuan -->
-      <div class="flex items-center justify-center mb-5 sm:mb-8 w-full">
-        <div class="bg-sky-100/75 dark:bg-slate-800/70 px-4 sm:px-6 py-2.5 rounded-full text-center transition-colors border border-sky-200/70 dark:border-slate-700/80 max-w-full">
-          <p id="mascotText" class="text-xs sm:text-sm font-bold text-sky-800 dark:text-sky-300 flex items-center justify-center gap-2">
-            <svg class="icon-svg text-base sm:text-lg flex-shrink-0" viewBox="0 0 256 256" fill="currentColor">
-              <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"/>
-            </svg>
-            <span>Ketuk kata untuk mendengar cara baca, atau gunakan mikrofon.</span>
-          </p>
+  <main class="w-full max-w-4xl mx-auto px-3 sm:px-6 py-3 sm:py-6 flex-1 flex flex-col items-center justify-center z-10 relative">
+
+    <!-- ========================================== -->
+    <!-- VIEW 0: MENU BERANDA (4 PERMAINAN EDUKASI) -->
+    <!-- ========================================== -->
+    <section id="view-home" class="hidden w-full max-w-3xl animate-view flex-col items-center">
+      <div class="main-card w-full rounded-[2rem] sm:rounded-[2.5rem] p-5 sm:p-8 md:p-10 flex flex-col items-center">
+        <!-- Logo ABC -->
+        <div class="flex gap-2 mb-3">
+          <div class="w-11 h-12 sm:w-12 sm:h-14 rounded-2xl bg-rose-500 text-white flex items-center justify-center text-2xl sm:text-3xl font-black shadow-[0_5px_0_0_#be123c] transform -rotate-6">A</div>
+          <div class="w-11 h-12 sm:w-12 sm:h-14 rounded-2xl bg-indigo-500 text-white flex items-center justify-center text-2xl sm:text-3xl font-black shadow-[0_5px_0_0_#4338ca] transform -translate-y-1.5">B</div>
+          <div class="w-11 h-12 sm:w-12 sm:h-14 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-2xl sm:text-3xl font-black shadow-[0_5px_0_0_#047857] transform rotate-6">C</div>
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-heading font-black text-slate-800 dark:text-white tracking-tight text-center mb-1">Pilih Permainan Belajarmu!</h2>
+        <p class="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300 text-center mb-6">Semua permainan mengumpulkan hadiah di langit yang sama ✨</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 w-full">
+          <!-- Card 1: Ayo Baca -->
+          <button type="button" onclick="switchGameMode('ayobaca')" class="btn-3d p-4 sm:p-5 rounded-3xl flex items-center gap-4 text-left group w-full">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-md flex-shrink-0 group-hover:scale-105 transition-transform">
+              🎙️
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 mb-1">Suara & Lafal</div>
+              <h3 class="text-lg sm:text-xl font-heading font-black text-slate-800 dark:text-white leading-tight">Ayo Baca</h3>
+              <p class="text-xs font-bold text-slate-500 dark:text-slate-400 truncate">Baca kata, frasa & kalimat SPOK</p>
+            </div>
+          </button>
+
+          <!-- Card 2: Matematika -->
+          <button type="button" onclick="switchGameMode('math')" class="btn-3d p-4 sm:p-5 rounded-3xl flex items-center gap-4 text-left group w-full">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-blue-400 to-indigo-500 text-white flex items-center justify-center text-3xl shadow-md flex-shrink-0 group-hover:scale-105 transition-transform">
+              🔢
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 mb-1">Berhitung</div>
+              <h3 class="text-lg sm:text-xl font-heading font-black text-slate-800 dark:text-white leading-tight">Matematika</h3>
+              <p class="text-xs font-bold text-slate-500 dark:text-slate-400 truncate">Penjumlahan & pengurangan seru</p>
+            </div>
+          </button>
+
+          <!-- Card 3: Susun Kata (Bahasa Indonesia) -->
+          <button type="button" onclick="switchGameMode('reading_id')" class="btn-3d p-4 sm:p-5 rounded-3xl flex items-center gap-4 text-left group w-full">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white flex items-center justify-center text-3xl shadow-md flex-shrink-0 group-hover:scale-105 transition-transform">
+              🧩
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 mb-1">Ejaan & Gambar</div>
+              <h3 class="text-lg sm:text-xl font-heading font-black text-slate-800 dark:text-white leading-tight">Susun Kata</h3>
+              <p class="text-xs font-bold text-slate-500 dark:text-slate-400 truncate">Rangkai huruf Bahasa Indonesia</p>
+            </div>
+          </button>
+
+          <!-- Card 4: English Vocabulary -->
+          <button type="button" onclick="switchGameMode('reading_en')" class="btn-3d p-4 sm:p-5 rounded-3xl flex items-center gap-4 text-left group w-full">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-violet-400 to-fuchsia-500 text-white flex items-center justify-center text-3xl shadow-md flex-shrink-0 group-hover:scale-105 transition-transform">
+              🌍
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-fuchsia-100 dark:bg-fuchsia-900/50 text-fuchsia-700 dark:text-fuchsia-300 mb-1">Bilingual</div>
+              <h3 class="text-lg sm:text-xl font-heading font-black text-slate-800 dark:text-white leading-tight">English Words</h3>
+              <p class="text-xs font-bold text-slate-500 dark:text-slate-400 truncate">Belajar kosakata Bahasa Inggris</p>
+            </div>
+          </button>
         </div>
       </div>
+    </section>
 
-      <!-- Container Teks Kata -->
-      <div class="w-full min-h-[130px] sm:min-h-[160px] flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5 text-center z-10 mb-6 sm:mb-8 px-1" id="readingContainer">
-        <!-- Diisi oleh JavaScript -->
-      </div>
-
-      <!-- Live Transcript & Badge -->
-      <div class="min-h-[52px] flex flex-col items-center justify-center text-center mb-5 sm:mb-6 w-full px-2">
-        <div id="statusBadge" class="hidden px-5 py-1.5 rounded-full text-xs font-extrabold tracking-wider uppercase mb-2 shadow-sm"></div>
-        <p id="liveTranscript" class="text-sm sm:text-base font-bold text-slate-600 dark:text-slate-300 min-h-[24px] break-words max-w-xl">...</p>
-      </div>
-
-      <div class="w-full flex flex-row items-center justify-center gap-3 sm:gap-4 z-10">
-        <!-- Text to Speech (Dengarkan Semua) -->
-        <button type="button" onclick="speakTargetText()" title="Dengarkan Kalimat" aria-label="Dengarkan Kalimat" class="w-12 h-12 sm:w-14 sm:h-14 bg-white/95 dark:bg-slate-800/95 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-full flex items-center justify-center shadow-sm border-2 border-slate-200 dark:border-slate-700 transition-all active:scale-95 touch-manipulation cursor-pointer flex-shrink-0">
-          <svg class="icon-svg text-xl sm:text-2xl" viewBox="0 0 256 256" fill="currentColor">
-            <path d="M155.51,24.81a8,8,0,0,0-8.42.88L77.25,80H32A16,16,0,0,0,16,96v64a16,16,0,0,0,16,16H77.25l69.84,54.31A8,8,0,0,0,160,224V32A8,8,0,0,0,155.51,24.81ZM144,207.64,84.91,161.69A7.94,7.94,0,0,0,80,160H32V96H80a7.94,7.94,0,0,0,4.91-1.69L144,48.36ZM208,128a39.93,39.93,0,0,1-10,26.46,8,8,0,0,1-12-10.58,24,24,0,0,0,0-31.76,8,8,0,1,1,12-10.58A39.93,39.93,0,0,1,208,128Zm32,0a71.82,71.82,0,0,1-18,47.64,8,8,0,0,1-12-10.58,56,56,0,0,0,0-74.12,8,8,0,1,1,12-10.58A71.82,71.82,0,0,1,240,128Z"/>
+    <!-- ========================================== -->
+    <!-- VIEW 1: PERMAINAN AYO BACA                 -->
+    <!-- ========================================== -->
+    <section id="view-ayobaca" class="w-full flex flex-col items-center animate-view">
+      <!-- Navigasi Level Kategori Ayo Baca -->
+      <nav aria-label="Pilih Tingkat Bacaan" class="w-full max-w-md sm:max-w-lg bg-white/40 dark:bg-slate-900/40 backdrop-blur-sm p-1.5 rounded-full shadow-sm border border-white/60 dark:border-white/10 flex items-center justify-between mb-4 sm:mb-6 relative transition-colors">
+        <button type="button" onclick="selectLevel('kata')" id="tab-kata" class="level-tab flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold active touch-manipulation whitespace-nowrap">
+          Kata
+        </button>
+        <button type="button" onclick="selectLevel('frasa')" id="tab-frasa" class="level-tab flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold inactive touch-manipulation whitespace-nowrap">
+          Frasa
+        </button>
+        <button type="button" onclick="selectLevel('kalimat')" id="tab-kalimat" class="level-tab flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold inactive touch-manipulation whitespace-nowrap">
+          Kalimat
+        </button>
+        <div class="w-px h-5 bg-slate-300/60 dark:bg-slate-600/60 mx-1"></div>
+        <button type="button" onclick="openCustomModal()" id="tab-custom" title="Tulis Kalimat Sendiri" class="level-tab px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold inactive touch-manipulation flex justify-center items-center gap-1.5 group whitespace-nowrap">
+          <svg class="icon-svg group-hover:text-brand-500 transition-colors" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M92.69,216H48a8,8,0,0,1-8-8V163.31a8,8,0,0,1,2.34-5.65L165.66,34.34a8,8,0,0,1,11.31,0L221.66,79a8,8,0,0,1,0,11.31L98.34,213.66A8,8,0,0,1,92.69,216Z"/>
+            <line x1="136" y1="64" x2="192" y2="120"/>
           </svg>
+          <span class="hidden sm:inline text-xs">Tulis</span>
         </button>
+      </nav>
 
-        <!-- Mikrofon -->
-        <button type="button" id="btnMic" onclick="toggleSpeech()" class="flex-1 max-w-[220px] sm:max-w-[250px] py-3.5 sm:py-4 px-5 bg-brand-600 hover:bg-brand-500 text-white font-heading font-extrabold text-base sm:text-xl rounded-full flex items-center justify-center gap-2.5 sm:gap-3 shadow-float transition-all active:scale-95 touch-manipulation cursor-pointer">
-          <span id="micIconContainer" class="flex items-center justify-center"></span>
-          <span id="micLabel">Mulai Baca</span>
-        </button>
+      <!-- Kanvas Area Membaca (Glass Card Bening) -->
+      <div class="w-full main-card rounded-[2rem] sm:rounded-[2.5rem] p-5 sm:p-9 md:p-11 flex flex-col items-center relative z-10">
+        <!-- Instruksi Maskot & Bantuan -->
+        <div class="flex items-center justify-center mb-4 sm:mb-7 w-full">
+          <div class="bg-sky-100/75 dark:bg-slate-800/70 px-4 sm:px-6 py-2 rounded-full text-center transition-colors border border-sky-200/70 dark:border-slate-700/80 max-w-full">
+            <p id="mascotText" class="text-xs sm:text-sm font-bold text-sky-800 dark:text-sky-300 flex items-center justify-center gap-2">
+              <svg class="icon-svg text-base sm:text-lg flex-shrink-0" viewBox="0 0 256 256" fill="currentColor">
+                <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"/>
+              </svg>
+              <span>Ketuk kata untuk mendengar cara baca, atau gunakan mikrofon.</span>
+            </p>
+          </div>
+        </div>
 
-        <!-- Acak Baru / Lewati -->
-        <button type="button" onclick="nextItem()" title="Soal Berikutnya" aria-label="Soal Berikutnya" class="w-12 h-12 sm:w-14 sm:h-14 bg-white/95 dark:bg-slate-800/95 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-full flex items-center justify-center shadow-sm border-2 border-slate-200 dark:border-slate-700 transition-all active:scale-95 touch-manipulation cursor-pointer flex-shrink-0">
-          <svg class="icon-svg text-xl sm:text-2xl" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="40" y1="128" x2="216" y2="128"/>
-            <polyline points="144 56 216 128 144 200"/>
-          </svg>
-        </button>
-      </div>
+        <!-- Container Teks Kata -->
+        <div class="w-full min-h-[120px] sm:min-h-[150px] flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5 text-center z-10 mb-5 sm:mb-7 px-1" id="readingContainer">
+          <!-- Diisi oleh JavaScript -->
+        </div>
 
-      <!-- Fitur Bawah: Tes Simulasi & Bantuan Offline Manual -->
-      <div class="mt-6 sm:mt-8 pt-3 border-t border-slate-300/30 dark:border-slate-700/40 w-full flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm z-10">
-        <button type="button" onclick="markSingleStepManual()" class="text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10 font-bold transition-colors touch-manipulation flex items-center gap-1.5 px-3.5 py-2 rounded-full cursor-pointer">
-          <svg class="icon-svg" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="216 72 104 184 48 128"/>
-          </svg>
-          <span>Tandai 1 Kata Terbaca</span>
-        </button>
+        <!-- Live Transcript & Badge -->
+        <div class="min-h-[48px] flex flex-col items-center justify-center text-center mb-4 sm:mb-6 w-full px-2">
+          <div id="statusBadge" class="hidden px-5 py-1.5 rounded-full text-xs font-extrabold tracking-wider uppercase mb-2 shadow-sm"></div>
+          <p id="liveTranscript" class="text-sm sm:text-base font-bold text-slate-600 dark:text-slate-300 min-h-[24px] break-words max-w-xl">...</p>
+        </div>
 
-        <button type="button" onclick="simulateReadSuccess()" class="text-brand-600 dark:text-brand-400 hover:bg-brand-500/10 font-bold transition-colors touch-manipulation flex items-center gap-1.5 px-3.5 py-2 rounded-full cursor-pointer">
-          <svg class="icon-svg" viewBox="0 0 256 256" fill="currentColor">
-            <path d="M248,152a8,8,0,0,1-8,8H224v16a8,8,0,0,1-16,0V160H192a8,8,0,0,1,0-16h16V128a8,8,0,0,1,16,0v16h16A8,8,0,0,1,248,152ZM56,72H72V88a8,8,0,0,0,16,0V72h16a8,8,0,0,0,0-16H88V40a8,8,0,0,0-16,0V56H56a8,8,0,0,0,0,16ZM184,192h-8v-8a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16h8v8a8,8,0,0,0,16,0v-8h8a8,8,0,0,0,0-16ZM219.31,80,80,219.31a16,16,0,0,1-22.62,0L36.68,198.63a16,16,0,0,1,0-22.63L176,36.69a16,16,0,0,1,22.63,0l20.68,20.68A16,16,0,0,1,219.31,80Zm-54.63-12L144,88.69,167.31,112,188,91.31Z"/>
-          </svg>
-          <span>Simulasi Otomatis</span>
-        </button>
+        <div class="w-full flex flex-row items-center justify-center gap-3 sm:gap-4 z-10">
+          <!-- Text to Speech (Dengarkan Semua) -->
+          <button type="button" onclick="speakTargetText()" title="Dengarkan Kalimat" aria-label="Dengarkan Kalimat" class="w-12 h-12 sm:w-14 sm:h-14 bg-white/95 dark:bg-slate-800/95 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-full flex items-center justify-center shadow-sm border-2 border-slate-200 dark:border-slate-700 transition-all active:scale-95 touch-manipulation cursor-pointer flex-shrink-0">
+            <svg class="icon-svg text-xl sm:text-2xl" viewBox="0 0 256 256" fill="currentColor">
+              <path d="M155.51,24.81a8,8,0,0,0-8.42.88L77.25,80H32A16,16,0,0,0,16,96v64a16,16,0,0,0,16,16H77.25l69.84,54.31A8,8,0,0,0,160,224V32A8,8,0,0,0,155.51,24.81ZM144,207.64,84.91,161.69A7.94,7.94,0,0,0,80,160H32V96H80a7.94,7.94,0,0,0,4.91-1.69L144,48.36ZM208,128a39.93,39.93,0,0,1-10,26.46,8,8,0,0,1-12-10.58,24,24,0,0,0,0-31.76,8,8,0,1,1,12-10.58A39.93,39.93,0,0,1,208,128Zm32,0a71.82,71.82,0,0,1-18,47.64,8,8,0,0,1-12-10.58,56,56,0,0,0,0-74.12,8,8,0,1,1,12-10.58A71.82,71.82,0,0,1,240,128Z"/>
+            </svg>
+          </button>
+
+          <!-- Mikrofon -->
+          <button type="button" id="btnMic" onclick="toggleSpeech()" class="flex-1 max-w-[220px] sm:max-w-[250px] py-3.5 sm:py-4 px-5 bg-brand-600 hover:bg-brand-500 text-white font-heading font-extrabold text-base sm:text-xl rounded-full flex items-center justify-center gap-2.5 sm:gap-3 shadow-float transition-all active:scale-95 touch-manipulation cursor-pointer">
+            <span id="micIconContainer" class="flex items-center justify-center"></span>
+            <span id="micLabel">Mulai Baca</span>
+          </button>
+
+          <!-- Acak Baru / Lewati -->
+          <button type="button" onclick="nextItem()" title="Soal Berikutnya" aria-label="Soal Berikutnya" class="w-12 h-12 sm:w-14 sm:h-14 bg-white/95 dark:bg-slate-800/95 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-full flex items-center justify-center shadow-sm border-2 border-slate-200 dark:border-slate-700 transition-all active:scale-95 touch-manipulation cursor-pointer flex-shrink-0">
+            <svg class="icon-svg text-xl sm:text-2xl" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="40" y1="128" x2="216" y2="128"/>
+              <polyline points="144 56 216 128 144 200"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Fitur Bawah: Tes Simulasi & Bantuan Offline Manual -->
+        <div class="mt-5 sm:mt-7 pt-3 border-t border-slate-300/30 dark:border-slate-700/40 w-full flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm z-10">
+          <button type="button" onclick="markSingleStepManual()" class="text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10 font-bold transition-colors touch-manipulation flex items-center gap-1.5 px-3.5 py-1.5 rounded-full cursor-pointer">
+            <svg class="icon-svg" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="216 72 104 184 48 128"/>
+            </svg>
+            <span>Tandai 1 Kata Terbaca</span>
+          </button>
+
+          <button type="button" onclick="simulateReadSuccess()" class="text-brand-600 dark:text-brand-400 hover:bg-brand-500/10 font-bold transition-colors touch-manipulation flex items-center gap-1.5 px-3.5 py-1.5 rounded-full cursor-pointer">
+            <svg class="icon-svg" viewBox="0 0 256 256" fill="currentColor">
+              <path d="M248,152a8,8,0,0,1-8,8H224v16a8,8,0,0,1-16,0V160H192a8,8,0,0,1,0-16h16V128a8,8,0,0,1,16,0v16h16A8,8,0,0,1,248,152ZM56,72H72V88a8,8,0,0,0,16,0V72h16a8,8,0,0,0,0-16H88V40a8,8,0,0,0-16,0V56H56a8,8,0,0,0,0,16ZM184,192h-8v-8a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16h8v8a8,8,0,0,0,16,0v-8h8a8,8,0,0,0,0-16ZM219.31,80,80,219.31a16,16,0,0,1-22.62,0L36.68,198.63a16,16,0,0,1,0-22.63L176,36.69a16,16,0,0,1,22.63,0l20.68,20.68A16,16,0,0,1,219.31,80Zm-54.63-12L144,88.69,167.31,112,188,91.31Z"/>
+            </svg>
+            <span>Simulasi Otomatis</span>
+          </button>
+        </div>
       </div>
     </section>
+
+    <!-- ========================================================== -->
+    <!-- VIEW 2, 3, 4: CONTAINER KUIS (MATEMATIKA, SUSUN KATA, EN)  -->
+    <!-- ========================================================== -->
+    <section id="view-quiz" class="hidden w-full flex-col items-center animate-view">
+      <!-- Navigasi Level Kategori Kuis (Identik dengan Kata | Frasa | Kalimat pada Ayo Baca) -->
+      <nav aria-label="Pilih Tingkat Kesulitan" class="w-full max-w-md sm:max-w-lg bg-white/40 dark:bg-slate-900/40 backdrop-blur-sm p-1.5 rounded-full shadow-sm border border-white/60 dark:border-white/10 flex items-center justify-between mb-4 sm:mb-6 relative transition-colors">
+        <button type="button" onclick="selectQuizLevel(1)" id="quiz-tab-1" class="level-tab flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold active touch-manipulation whitespace-nowrap">
+          Kata
+        </button>
+        <button type="button" onclick="selectQuizLevel(2)" id="quiz-tab-2" class="level-tab flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold inactive touch-manipulation whitespace-nowrap">
+          Frasa
+        </button>
+        <button type="button" onclick="selectQuizLevel(3)" id="quiz-tab-3" class="level-tab flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold inactive touch-manipulation whitespace-nowrap">
+          Kalimat
+        </button>
+      </nav>
+
+      <!-- Kanvas Area Bermain (Glass Card Bening - Seragam dengan Ayo Baca) -->
+      <div class="w-full main-card rounded-[2rem] sm:rounded-[2.5rem] p-5 sm:p-9 md:p-11 flex flex-col items-center relative z-10">
+        <!-- Instruksi Maskot & Bantuan -->
+        <div class="flex items-center justify-center mb-4 sm:mb-7 w-full">
+          <div class="bg-sky-100/75 dark:bg-slate-800/70 px-4 sm:px-6 py-2 rounded-full text-center transition-colors border border-sky-200/70 dark:border-slate-700/80 max-w-full">
+            <p class="text-xs sm:text-sm font-bold text-sky-800 dark:text-sky-300 flex items-center justify-center gap-2">
+              <svg class="icon-svg text-base sm:text-lg flex-shrink-0" viewBox="0 0 256 256" fill="currentColor">
+                <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"/>
+              </svg>
+              <span id="quizMascotText">Pilih jawaban yang tepat untuk mengumpulkan hadiah di langit.</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Container Utama Soal Kuis -->
+        <div id="quizDynamicStage" class="w-full min-h-[150px] sm:min-h-[180px] flex flex-col items-center justify-center text-center z-10 mb-4 sm:mb-6 px-1">
+          <!-- Diisi oleh JavaScript -->
+        </div>
+
+        <!-- Live Transcript & Status Badge (Konsisten dengan Ayo Baca) -->
+        <div class="min-h-[48px] flex flex-col items-center justify-center text-center mb-4 sm:mb-6 w-full px-2">
+          <div id="quizStatusBadge" class="hidden px-5 py-1.5 rounded-full text-xs font-extrabold tracking-wider uppercase mb-2 shadow-sm"></div>
+          <p id="quizLiveTranscript" class="text-sm sm:text-base font-bold text-slate-600 dark:text-slate-300 min-h-[24px] break-words max-w-xl">...</p>
+        </div>
+
+        <!-- Baris Tombol Utama Bawah (Dengar Suara | Aksi Utama | Soal Berikutnya) -->
+        <div class="w-full flex flex-row items-center justify-center gap-3 sm:gap-4 z-10">
+          <!-- Text to Speech (Dengarkan Soal / Kata) -->
+          <button type="button" onclick="speakQuizCurrentItem()" title="Dengarkan Suara" aria-label="Dengarkan Suara" class="w-12 h-12 sm:w-14 sm:h-14 bg-white/95 dark:bg-slate-800/95 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-full flex items-center justify-center shadow-sm border-2 border-slate-200 dark:border-slate-700 transition-all active:scale-95 touch-manipulation cursor-pointer flex-shrink-0">
+            <svg class="icon-svg text-xl sm:text-2xl" viewBox="0 0 256 256" fill="currentColor">
+              <path d="M155.51,24.81a8,8,0,0,0-8.42.88L77.25,80H32A16,16,0,0,0,16,96v64a16,16,0,0,0,16,16H77.25l69.84,54.31A8,8,0,0,0,160,224V32A8,8,0,0,0,155.51,24.81ZM144,207.64,84.91,161.69A7.94,7.94,0,0,0,80,160H32V96H80a7.94,7.94,0,0,0,4.91-1.69L144,48.36ZM208,128a39.93,39.93,0,0,1-10,26.46,8,8,0,0,1-12-10.58,24,24,0,0,0,0-31.76,8,8,0,1,1,12-10.58A39.93,39.93,0,0,1,208,128Zm32,0a71.82,71.82,0,0,1-18,47.64,8,8,0,0,1-12-10.58,56,56,0,0,0,0-74.12,8,8,0,1,1,12-10.58A71.82,71.82,0,0,1,240,128Z"/>
+            </svg>
+          </button>
+
+          <!-- Tombol Aksi Utama (Cek Jawaban) -->
+          <button type="button" id="btnQuizMainAction" onclick="triggerQuizMainAction()" class="flex-1 max-w-[220px] sm:max-w-[250px] py-3.5 sm:py-4 px-5 bg-brand-600 hover:bg-brand-500 text-white font-heading font-extrabold text-base sm:text-xl rounded-full flex items-center justify-center gap-2.5 sm:gap-3 shadow-float transition-all active:scale-95 touch-manipulation cursor-pointer">
+            <svg class="icon-svg text-xl sm:text-2xl" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="28" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="216 72 104 184 48 128"/>
+            </svg>
+            <span id="quizMainActionLabel">Cek Jawaban</span>
+          </button>
+
+          <!-- Acak Baru / Lewati -->
+          <button type="button" onclick="nextQuizItem()" title="Soal Berikutnya" aria-label="Soal Berikutnya" class="w-12 h-12 sm:w-14 sm:h-14 bg-white/95 dark:bg-slate-800/95 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-full flex items-center justify-center shadow-sm border-2 border-slate-200 dark:border-slate-700 transition-all active:scale-95 touch-manipulation cursor-pointer flex-shrink-0">
+            <svg class="icon-svg text-xl sm:text-2xl" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="40" y1="128" x2="216" y2="128"/>
+              <polyline points="144 56 216 128 144 200"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Fitur Bawah: Bantuan Langkah & Simulasi Otomatis (Seragam dengan Ayo Baca) -->
+        <div class="mt-5 sm:mt-7 pt-3 border-t border-slate-300/30 dark:border-slate-700/40 w-full flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm z-10">
+          <button type="button" onclick="quizHelperStep()" class="text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10 font-bold transition-colors touch-manipulation flex items-center gap-1.5 px-3.5 py-1.5 rounded-full cursor-pointer">
+            <svg class="icon-svg" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="216 72 104 184 48 128"/>
+            </svg>
+            <span id="quizHelperStepLabel">Bantu 1 Langkah</span>
+          </button>
+
+          <button type="button" onclick="simulateQuizSuccess()" class="text-brand-600 dark:text-brand-400 hover:bg-brand-500/10 font-bold transition-colors touch-manipulation flex items-center gap-1.5 px-3.5 py-1.5 rounded-full cursor-pointer">
+            <svg class="icon-svg" viewBox="0 0 256 256" fill="currentColor">
+              <path d="M248,152a8,8,0,0,1-8,8H224v16a8,8,0,0,1-16,0V160H192a8,8,0,0,1,0-16h16V128a8,8,0,0,1,16,0v16h16A8,8,0,0,1,248,152ZM56,72H72V88a8,8,0,0,0,16,0V72h16a8,8,0,0,0,0-16H88V40a8,8,0,0,0-16,0V56H56a8,8,0,0,0,0,16ZM184,192h-8v-8a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16h8v8a8,8,0,0,0,16,0v-8h8a8,8,0,0,0,0-16ZM219.31,80,80,219.31a16,16,0,0,1-22.62,0L36.68,198.63a16,16,0,0,1,0-22.63L176,36.69a16,16,0,0,1,22.63,0l20.68,20.68A16,16,0,0,1,219.31,80Zm-54.63-12L144,88.69,167.31,112,188,91.31Z"/>
+            </svg>
+            <span>Simulasi Otomatis</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- Modal Tulis Sendiri -->
@@ -404,7 +651,7 @@
     </div>
   </div>
 
-  <!-- Modal Konfirmasi Reset Skor (Menggantikan confirm() bawaan browser) -->
+  <!-- Modal Konfirmasi Reset Skor -->
   <div id="resetModal" role="dialog" aria-modal="true" aria-labelledby="resetModalTitle" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
     <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl flex flex-col gap-4 transform scale-95 transition-all duration-300 border border-slate-100 dark:border-slate-700 text-center" id="resetModalContent">
       <div class="w-14 h-14 rounded-full bg-rose-100 dark:bg-rose-900/30 text-rose-500 flex items-center justify-center mx-auto">
@@ -414,7 +661,7 @@
         </svg>
       </div>
       <h3 id="resetModalTitle" class="font-heading font-extrabold text-xl text-slate-800 dark:text-white m-0">Reset Pencapaian?</h3>
-      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium m-0">Semua koleksi bintang/balon, awan, dan bulan/matahari akan dikembalikan ke 0.</p>
+      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium m-0">Semua koleksi bintang/balon, awan, dan bulan/matahari dari seluruh permainan akan dikembalikan ke 0.</p>
       <div class="flex gap-3 justify-center mt-3">
         <button type="button" onclick="closeResetModal()" class="flex-1 py-2.5 rounded-full font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 cursor-pointer">Batal</button>
         <button type="button" onclick="executeResetScore()" class="flex-1 py-2.5 rounded-full font-bold bg-rose-500 text-white hover:bg-rose-600 shadow-md cursor-pointer">Ya, Reset</button>
@@ -481,6 +728,9 @@
       updateBackgroundItems();
     }
 
+    // =====================================================
+    // DATABASE PERMAINAN 1: AYO BACA (KATA, FRASA, KALIMAT)
+    // =====================================================
     const kosaKataDasar = [
       "Buku", "Sepeda", "Bola", "Taman", "Meja", "Rumah", "Pohon", "Bunga", 
       "Ayah", "Ibu", "Guru", "Dokter", "Polisi", "Petani", "Nelayan", "Murid",
@@ -568,6 +818,66 @@
       ]
     };
 
+    // ==========================================================
+    // DATABASE PERMAINAN 2, 3, 4 (MATEMATIKA, SUSUN KATA, ENGLISH)
+    // ==========================================================
+    const INDO_DB = {
+      1: [
+        { word: "API", emoji: "🔥" }, { word: "TAS", emoji: "🎒" }, { word: "JUS", emoji: "🥤" },
+        { word: "BOLA", emoji: "⚽" }, { word: "BUKU", emoji: "📚" }, { word: "MATA", emoji: "👀" },
+        { word: "GIGI", emoji: "🦷" }, { word: "SUSU", emoji: "🥛" }, { word: "ROTI", emoji: "🍞" },
+        { word: "IBU", emoji: "👩" }, { word: "APEL", emoji: "🍎" }, { word: "SAPI", emoji: "🐄" }
+      ],
+      2: [
+        { word: "MEJA", emoji: "🪑" }, { word: "BAJU", emoji: "👕" }, { word: "RUMAH", emoji: "🏠" },
+        { word: "MOBIL", emoji: "🚗" }, { word: "LAMPU", emoji: "💡" }, { word: "PINTU", emoji: "🚪" },
+        { word: "HUJAN", emoji: "🌧️" }, { word: "BULAN", emoji: "🌙" }, { word: "KASUR", emoji: "🛏️" },
+        { word: "PAGAR", emoji: "🚧" }, { word: "POHON", emoji: "🌳" }, { word: "KUNCI", emoji: "🔑" },
+        { word: "JERUK", emoji: "🍊" }, { word: "GAJAH", emoji: "🐘" }, { word: "SINGA", emoji: "🦁" }
+      ],
+      3: [
+        { word: "SEKOLAH", emoji: "🏫" }, { word: "SEPATU", emoji: "👟" }, { word: "KELINCI", emoji: "🐇" },
+        { word: "PESAWAT", emoji: "✈️" }, { word: "BINTANG", emoji: "⭐" }, { word: "MATAHARI", emoji: "☀️" },
+        { word: "KOMPUTER", emoji: "💻" }, { word: "TELEVISI", emoji: "📺" }, { word: "JENDELA", emoji: "🪟" },
+        { word: "KELUARGA", emoji: "👨‍👩‍👧" }, { word: "PELANGI", emoji: "🌈" }, { word: "BENDERA", emoji: "🇮🇩" },
+        { word: "SEPEDA", emoji: "🚲" }, { word: "BONEKA", emoji: "🧸" }, { word: "SEMANGKA", emoji: "🍉" }
+      ]
+    };
+
+    const ENGLISH_DB = {
+      1: [
+        { word: "CAT", emoji: "🐱" }, { word: "DOG", emoji: "🐶" }, { word: "SUN", emoji: "☀️" },
+        { word: "CAR", emoji: "🚗" }, { word: "BUS", emoji: "🚌" }, { word: "PEN", emoji: "🖊️" },
+        { word: "CUP", emoji: "☕" }, { word: "HAT", emoji: "🧢" }, { word: "BAG", emoji: "🎒" },
+        { word: "EGG", emoji: "🥚" }, { word: "COW", emoji: "🐄" }, { word: "ANT", emoji: "🐜" }
+      ],
+      2: [
+        { word: "BIRD", emoji: "🐦" }, { word: "FISH", emoji: "🐟" }, { word: "DUCK", emoji: "🦆" },
+        { word: "LION", emoji: "🦁" }, { word: "FROG", emoji: "🐸" }, { word: "BOOK", emoji: "📚" },
+        { word: "MILK", emoji: "🥛" }, { word: "CAKE", emoji: "🍰" }, { word: "TREE", emoji: "🌳" },
+        { word: "STAR", emoji: "⭐" }, { word: "MOON", emoji: "🌙" }, { word: "DOOR", emoji: "🚪" }
+      ],
+      3: [
+        { word: "APPLE", emoji: "🍎" }, { word: "TIGER", emoji: "🐯" }, { word: "ZEBRA", emoji: "🦓" },
+        { word: "HOUSE", emoji: "🏠" }, { word: "MOUSE", emoji: "🐭" }, { word: "SNAKE", emoji: "🐍" },
+        { word: "TRAIN", emoji: "🚂" }, { word: "PLANE", emoji: "✈️" }, { word: "TABLE", emoji: "🪑" },
+        { word: "ROBOT", emoji: "🤖" }, { word: "FLOWER", emoji: "🌻" }, { word: "GRAPES", emoji: "🍇" },
+        { word: "ORANGE", emoji: "🍊" }, { word: "BANANA", emoji: "🍌" }, { word: "PENCIL", emoji: "✏️" }
+      ]
+    };
+
+    const MATH_CONFIG = {
+      1: { count: 10, max: 10, desc: "Angka 0 - 10 (Mudah)" },
+      2: { count: 10, max: 20, desc: "Angka 0 - 20 (Sedang)" },
+      3: { count: 10, max: 50, desc: "Angka 0 - 50 (Mahir)" }
+    };
+
+    const READING_CONFIG = {
+      1: { count: 10, descId: "10 Kata Pendek (3-4 Huruf)", descEn: "10 Short Words (3 Letters)" },
+      2: { count: 10, descId: "10 Kata Sedang (4-5 Huruf)", descEn: "10 Medium Words (4 Letters)" },
+      3: { count: 10, descId: "10 Kata Panjang (6-8 Huruf)", descEn: "10 Long Words (5-6 Letters)" }
+    };
+
     function getRandomItem(arr) {
       return arr[Math.floor(Math.random() * arr.length)];
     }
@@ -607,19 +917,22 @@
     }
 
     // STATE UTAMA APLIKASI
+    let activeGameMode = 'ayobaca'; // 'home' | 'ayobaca' | 'math' | 'reading_id' | 'reading_en'
     let currentLevel = 'kata';
     let currentTargetText = '';
     let currentTargetWords = [];
     let currentTargetIndex = 0;
     let hasCompletedItem = false;
 
-    let totalScore = Math.max(0, parseInt(safeGetStorage('ayobaca_total_score_v5', '0'), 10) || 0);
+    // Gabungkan penyimpanan skor sebelumnya jika ada
+    let initialScore = parseInt(safeGetStorage('ayobaca_total_score_v5', '0'), 10) || 0;
+    let totalScore = Math.max(0, initialScore);
     let isListening = false;
     let soundEnabled = true;
 
-    // Timer References (Mencegah kebocoran interval/timeout saat pindah soal)
     let simulationInterval = null;
     let autoNextTimeout = null;
+    let quizFeedbackTimeout = null;
 
     function clearAllTimers() {
       if (simulationInterval) {
@@ -630,8 +943,15 @@
         clearTimeout(autoNextTimeout);
         autoNextTimeout = null;
       }
+      if (quizFeedbackTimeout) {
+        clearTimeout(quizFeedbackTimeout);
+        quizFeedbackTimeout = null;
+      }
     }
 
+    // =====================================================
+    // NATIVE WEB AUDIO SYNTHESIZER (100% OFFLINE)
+    // =====================================================
     let nativeAudioCtx = null;
 
     function getAudioContext() {
@@ -649,17 +969,17 @@
       return nativeAudioCtx;
     }
 
-    function playNote(freq, startTimeOffset, duration, maxGain = 0.16) {
+    function playNote(freq, startTimeOffset, duration, maxGain = 0.16, waveType = 'sine') {
       const ctx = getAudioContext();
       if (!ctx) return;
       try {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = 'sine';
+        osc.type = waveType;
         osc.frequency.setValueAtTime(freq, ctx.currentTime + startTimeOffset);
 
         gain.gain.setValueAtTime(0.001, ctx.currentTime + startTimeOffset);
-        gain.gain.exponentialRampToValueAtTime(maxGain, ctx.currentTime + startTimeOffset + 0.025);
+        gain.gain.exponentialRampToValueAtTime(maxGain, ctx.currentTime + startTimeOffset + 0.02);
         gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + startTimeOffset + duration);
 
         osc.connect(gain);
@@ -670,18 +990,34 @@
       } catch (e) {}
     }
 
+    function playTapTone() {
+      if (!soundEnabled) return;
+      playNote(680, 0, 0.09, 0.1, 'sine');
+    }
+
+    function playDeleteTone() {
+      if (!soundEnabled) return;
+      playNote(320, 0, 0.11, 0.1, 'sine');
+    }
+
     function playWordTone() {
       if (!soundEnabled) return;
-      playNote(783.99, 0, 0.16, 0.14); // Nada G5 jernih
+      playNote(783.99, 0, 0.16, 0.14, 'sine'); // G5
+    }
+
+    function playWrongTone() {
+      if (!soundEnabled) return;
+      playNote(220, 0, 0.18, 0.12, 'triangle');
+      playNote(165, 0.14, 0.25, 0.12, 'triangle');
     }
 
     function playSuccessTone() {
       if (!soundEnabled) return;
       // Arpeggio C5 - E5 - G5 - C6
-      playNote(523.25, 0.00, 0.22, 0.15);
-      playNote(659.25, 0.13, 0.22, 0.15);
-      playNote(783.99, 0.26, 0.25, 0.15);
-      playNote(1046.50, 0.40, 0.55, 0.18);
+      playNote(523.25, 0.00, 0.22, 0.15, 'sine');
+      playNote(659.25, 0.13, 0.22, 0.15, 'sine');
+      playNote(783.99, 0.26, 0.25, 0.15, 'sine');
+      playNote(1046.50, 0.40, 0.55, 0.18, 'sine');
     }
 
     function updateSoundIcon() {
@@ -734,7 +1070,7 @@
             const p = confettiParticles[i];
             p.x += p.vx;
             p.y += p.vy;
-            p.vy += 0.38; // gravitasi
+            p.vy += 0.38;
             p.vx *= 0.99;
             p.rotation += p.rotSpeed;
             p.opacity -= 0.008;
@@ -764,6 +1100,22 @@
       }
     }
 
+    // Fungsi terpusat untuk menambah skor gamifikasi dari permainan mana pun
+    function addRewardPoints(points = 1, playToneEffect = true) {
+      for (let i = 0; i < points; i++) {
+        totalScore++;
+        if (totalScore > 0 && totalScore % 1000 === 0) {
+          triggerConfetti(true);
+        } else if (totalScore > 0 && totalScore % 50 === 0) {
+          triggerConfetti(false);
+        }
+      }
+      safeSetStorage('ayobaca_total_score_v5', String(totalScore));
+      if (playToneEffect) playWordTone();
+      updateScoreUI();
+      updateBackgroundItems();
+    }
+
     function openResetModal() {
       const modal = document.getElementById('resetModal');
       const content = document.getElementById('resetModalContent');
@@ -789,6 +1141,7 @@
       safeSetStorage('ayobaca_total_score_v5', '0');
       const sf = document.getElementById('starfield');
       if (sf) sf.innerHTML = '';
+      playDeleteTone();
       updateScoreUI();
       updateBackgroundItems();
       closeResetModal();
@@ -797,9 +1150,9 @@
 
     function updateScoreUI() {
       const totalClouds = Math.floor(totalScore / 50);
-      const moons = Math.floor(totalClouds / 20); // 1000 kata = 1 Bulan/Matahari
-      const clouds = totalClouds % 20;            // 50 kata = 1 Awan
-      const stars = totalScore % 50;              // 1 kata = 1 Bintang/Balon
+      const moons = Math.floor(totalClouds / 20); // 1.000 poin = 1 Bulan/Matahari
+      const clouds = totalClouds % 20;            // 50 poin = 1 Awan
+      const stars = totalScore % 50;              // 1 poin = 1 Bintang/Balon
 
       const moonSvg = isDark ? SVG_ICONS.moonFill('#93c5fd', '20px') : SVG_ICONS.sunFill('#f59e0b', '20px');
       const cloudSvg = SVG_ICONS.cloudFill('#94a3b8', '20px');
@@ -807,12 +1160,12 @@
 
       const parts = [];
       if (moons > 0) {
-        parts.push(`<div class="flex items-center gap-1" title="${isDark ? 'Bulan Sabit' : 'Matahari'} (1.000 Kata)">${moonSvg}<span class="font-extrabold">${moons}</span></div>`);
+        parts.push(`<div class="flex items-center gap-1" title="${isDark ? 'Bulan Sabit' : 'Matahari'} (1.000 Poin)">${moonSvg}<span class="font-extrabold">${moons}</span></div>`);
       }
       if (clouds > 0 || moons > 0) {
-        parts.push(`<div class="flex items-center gap-1" title="Awan (50 Kata)">${cloudSvg}<span class="font-extrabold">${clouds}</span></div>`);
+        parts.push(`<div class="flex items-center gap-1" title="Awan (50 Poin)">${cloudSvg}<span class="font-extrabold">${clouds}</span></div>`);
       }
-      parts.push(`<div class="flex items-center gap-1" title="${isDark ? 'Bintang' : 'Balon'} (1 Kata)">${starSvg}<span class="font-extrabold">${stars}</span></div>`);
+      parts.push(`<div class="flex items-center gap-1" title="${isDark ? 'Bintang' : 'Balon'} (1 Poin)">${starSvg}<span class="font-extrabold">${stars}</span></div>`);
 
       const wrapper = document.getElementById('starCounterWrapper');
       if (!wrapper) return;
@@ -898,9 +1251,53 @@
       }
     }
 
+    // =====================================================
+    // NAVIGASI ANTAR 4 PERMAINAN EDUKASI
+    // =====================================================
+    function switchGameMode(mode) {
+      stopListening();
+      clearAllTimers();
+      playTapTone();
+      activeGameMode = mode;
+
+      const modes = ['home', 'ayobaca', 'math', 'reading_id', 'reading_en'];
+      modes.forEach(m => {
+        const navBtn = document.getElementById(`nav-${m}`);
+        if (!navBtn) return;
+        const isCurrent = m === mode;
+        navBtn.className = `${m === 'home' ? 'px-3 sm:px-4' : 'flex-1 px-3 sm:px-4'} mode-tab py-2 rounded-full text-xs sm:text-sm font-extrabold ${isCurrent ? 'active' : 'inactive'} flex items-center justify-center gap-1.5 whitespace-nowrap`;
+      });
+
+      const viewHome = document.getElementById('view-home');
+      const viewAyoBaca = document.getElementById('view-ayobaca');
+      const viewQuiz = document.getElementById('view-quiz');
+
+      viewHome.classList.add('hidden');
+      viewHome.classList.remove('flex');
+      viewAyoBaca.classList.add('hidden');
+      viewAyoBaca.classList.remove('flex');
+      viewQuiz.classList.add('hidden');
+      viewQuiz.classList.remove('flex');
+
+      if (mode === 'home') {
+        viewHome.classList.remove('hidden');
+        viewHome.classList.add('flex');
+      } else if (mode === 'ayobaca') {
+        viewAyoBaca.classList.remove('hidden');
+        viewAyoBaca.classList.add('flex');
+        if (!currentTargetText) selectLevel('kata');
+      } else {
+        viewQuiz.classList.remove('hidden');
+        viewQuiz.classList.add('flex');
+        openQuizLevelMenu(mode);
+      }
+    }
+
+    // =====================================================
+    // LOGIKA PERMAINAN 1: AYO BACA
+    // =====================================================
     function sanitizeTextToWords(rawText) {
       if (!rawText || typeof rawText !== 'string') return [];
-      // Hanya izinkan huruf, angka, spasi, dan tanda hubung yang berada di antara huruf/angka
       const cleaned = rawText
         .replace(/[\r\n]+/g, ' ')
         .replace(/[^\p{L}\p{N}\s\-]/gu, '')
@@ -940,7 +1337,6 @@
       }
       currentTargetIndex = 0;
 
-      // Ukuran adaptif berdasarkan jumlah kata agar nyaman di layar tinggi (mobile) maupun lebar (desktop)
       const wordCount = currentTargetWords.length;
       let sizeClasses = "px-6 py-3.5 sm:px-7 sm:py-4 text-3xl sm:text-4xl lg:text-5xl rounded-2xl sm:rounded-3xl";
       if (wordCount >= 6) {
@@ -956,7 +1352,7 @@
         btn.className = `word-pill font-heading font-extrabold select-none ${sizeClasses}`;
         btn.textContent = w;
         btn.title = `Ketuk untuk mendengar kata "${w}"`;
-        btn.onclick = () => speakSingleWord(w);
+        btn.onclick = () => speakSingleWord(w, 'id-ID');
         container.appendChild(btn);
       });
 
@@ -974,9 +1370,9 @@
         if (!tab) return;
         const isCurrent = lvl === levelKey;
         if (lvl === 'custom') {
-          tab.className = `level-tab px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full text-sm font-bold ${isCurrent ? 'active' : 'inactive'} touch-manipulation flex justify-center items-center gap-1.5 group whitespace-nowrap`;
+          tab.className = `level-tab px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold ${isCurrent ? 'active' : 'inactive'} touch-manipulation flex justify-center items-center gap-1.5 group whitespace-nowrap`;
         } else {
-          tab.className = `level-tab flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-sm font-bold ${isCurrent ? 'active' : 'inactive'} touch-manipulation whitespace-nowrap`;
+          tab.className = `level-tab flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold ${isCurrent ? 'active' : 'inactive'} touch-manipulation whitespace-nowrap`;
         }
       });
 
@@ -1025,7 +1421,7 @@
             i + 1 < spokenWords.length &&
             spokenWords[i + 1] === parts[1]
           ) {
-            i++; // Lewati bagian kata kedua karena sudah cocok sebagai kata ulang
+            i++;
             matchedTargetIdx++;
           }
         } else {
@@ -1043,7 +1439,6 @@
 
       const newMatchedIndex = computeMatchedWordCount(spokenText);
 
-      // Hanya berikan skor untuk kata yang baru saja berhasil dicapai
       while (currentTargetIndex < newMatchedIndex) {
         markWordSuccess();
       }
@@ -1074,18 +1469,7 @@
 
     function markWordSuccess() {
       currentTargetIndex++;
-      totalScore++;
-      safeSetStorage('ayobaca_total_score_v5', String(totalScore));
-      playWordTone();
-
-      if (totalScore > 0 && totalScore % 1000 === 0) {
-        triggerConfetti(true);
-      } else if (totalScore > 0 && totalScore % 50 === 0) {
-        triggerConfetti(false);
-      }
-
-      updateScoreUI();
-      updateBackgroundItems();
+      addRewardPoints(1, true);
     }
 
     function handleSuccess() {
@@ -1096,7 +1480,7 @@
       setStatusBadge("BERHASIL!", "bg-emerald-500 text-white");
       autoNextTimeout = setTimeout(() => {
         nextItem();
-      }, 2300);
+      }, 2200);
     }
 
     function setupRecognition() {
@@ -1193,11 +1577,13 @@
 
     let synth = 'speechSynthesis' in window ? window.speechSynthesis : null;
     let indonesianVoice = null;
+    let englishVoice = null;
 
     function initVoices() {
       if (!synth) return;
       const voices = synth.getVoices();
       indonesianVoice = voices.find(v => v.lang && v.lang.toLowerCase().includes('id')) || null;
+      englishVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('en')) || null;
     }
 
     if (synth) {
@@ -1207,8 +1593,7 @@
       }
     }
 
-    function speakTextSafe(textToSpeak, rate = 0.82) {
-      // Matikan mikrofon terlebih dahulu agar jalur audio iOS/iPadOS tidak terpecah ke earpiece
+    function speakTextSafe(textToSpeak, lang = 'id-ID', rate = 0.82) {
       if (isListening) stopListening();
       if (!synth) {
         showToast("Fitur suara baca tidak tersedia di perangkat ini.", "error");
@@ -1218,21 +1603,25 @@
         try {
           synth.cancel();
           const utterance = new SpeechSynthesisUtterance(textToSpeak);
-          utterance.lang = 'id-ID';
-          if (!indonesianVoice) initVoices();
-          if (indonesianVoice) utterance.voice = indonesianVoice;
+          utterance.lang = lang;
+          if (!indonesianVoice || !englishVoice) initVoices();
+          if (lang.startsWith('en') && englishVoice) {
+            utterance.voice = englishVoice;
+          } else if (lang.startsWith('id') && indonesianVoice) {
+            utterance.voice = indonesianVoice;
+          }
           utterance.rate = rate;
           synth.speak(utterance);
         } catch (e) {}
-      }, 120);
+      }, 100);
     }
 
     function speakTargetText() {
-      speakTextSafe(currentTargetWords.join(' '), 0.82);
+      speakTextSafe(currentTargetWords.join(' '), 'id-ID', 0.82);
     }
 
-    function speakSingleWord(word) {
-      speakTextSafe(word, 0.78);
+    function speakSingleWord(word, lang = 'id-ID') {
+      speakTextSafe(word, lang, 0.78);
     }
 
     function updateMicUi(listening) {
@@ -1299,6 +1688,507 @@
       }, 480);
     }
 
+    // ===============================================================
+    // ENGINE KUIS TERPADU: MATEMATIKA, SUSUN KATA (ID), & ENGLISH (EN)
+    // ===============================================================
+    const QUIZ_LEVEL_LABELS = {
+      math: { 1: "Satuan", 2: "Puluhan", 3: "Mahir" },
+      reading_id: { 1: "Pendek", 2: "Sedang", 3: "Panjang" },
+      reading_en: { 1: "Basic", 2: "Medium", 3: "Advanced" }
+    };
+
+    let quizState = {
+      mode: 'math',       // 'math' | 'reading_id' | 'reading_en'
+      level: 1,           // 1 | 2 | 3
+      currentQ: null,     // Soal aktif saat ini
+      mathInput: '',
+      slots: [],
+      pool: [],
+      hasCompleted: false,
+      wrongShake: false
+    };
+
+    let quizHistory = [];
+
+    function setQuizStatusBadge(text, colorClasses) {
+      const badge = document.getElementById('quizStatusBadge');
+      if (!badge) return;
+      if (!text) {
+        badge.classList.add('hidden');
+        return;
+      }
+      badge.textContent = text;
+      badge.className = `px-5 py-1.5 rounded-full text-xs font-extrabold tracking-wider uppercase mb-2 transition-all shadow-sm ${colorClasses}`;
+      badge.classList.remove('hidden');
+    }
+
+    function setQuizLiveTranscript(text, colorClass) {
+      const el = document.getElementById('quizLiveTranscript');
+      if (!el) return;
+      el.textContent = text;
+      el.className = `text-sm sm:text-base font-bold min-h-[24px] transition-colors break-words max-w-xl ${colorClass}`;
+    }
+
+    function generateSingleQuizQuestion(mode, lvl) {
+      if (mode === 'math') {
+        const cfg = MATH_CONFIG[lvl] || MATH_CONFIG[1];
+        let n1, n2, op, ans, sig;
+        let attempts = 0;
+        do {
+          attempts++;
+          const isAdd = Math.random() > 0.45;
+          if (isAdd) {
+            n1 = Math.floor(Math.random() * (cfg.max + 1));
+            n2 = Math.floor(Math.random() * (cfg.max - n1 + 1));
+            op = '+';
+            ans = n1 + n2;
+          } else {
+            n1 = Math.floor(Math.random() * (cfg.max + 1));
+            n2 = Math.floor(Math.random() * (n1 + 1));
+            op = '-';
+            ans = n1 - n2;
+          }
+          sig = `math_${n1}${op}${n2}`;
+        } while (quizHistory.includes(sig) && attempts < 40);
+
+        quizHistory.push(sig);
+        if (quizHistory.length > 15) quizHistory.shift();
+        return { n1, n2, op, ans };
+      } else {
+        const db = mode === 'reading_en' ? ENGLISH_DB[lvl] : INDO_DB[lvl];
+        let chosen = db[0];
+        let attempts = 0;
+        do {
+          attempts++;
+          chosen = getRandomItem(db);
+        } while (quizHistory.includes(`${mode}_${chosen.word}`) && attempts < 40);
+
+        quizHistory.push(`${mode}_${chosen.word}`);
+        if (quizHistory.length > 12) quizHistory.shift();
+        return chosen;
+      }
+    }
+
+    function updateQuizTabsUI() {
+      const labels = QUIZ_LEVEL_LABELS[quizState.mode] || QUIZ_LEVEL_LABELS.math;
+      [1, 2, 3].forEach(lvl => {
+        const tab = document.getElementById(`quiz-tab-${lvl}`);
+        if (!tab) return;
+        tab.textContent = labels[lvl];
+        const isCurrent = lvl === quizState.level;
+        tab.className = `level-tab flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold ${isCurrent ? 'active' : 'inactive'} touch-manipulation whitespace-nowrap`;
+      });
+
+      const mascotEl = document.getElementById('quizMascotText');
+      const helperEl = document.getElementById('quizHelperStepLabel');
+      const mainBtnLabel = document.getElementById('quizMainActionLabel');
+
+      if (quizState.mode === 'math') {
+        if (mascotEl) mascotEl.textContent = "Ketuk angka untuk mengisi jawaban, atau ketuk ikon suara untuk mendengar soal.";
+        if (helperEl) helperEl.textContent = "Isi Jawaban Tepat";
+        if (mainBtnLabel) mainBtnLabel.textContent = "Cek Jawaban";
+      } else if (quizState.mode === 'reading_en') {
+        if (mascotEl) mascotEl.textContent = "Ketuk gambar untuk mendengar pelafalan Bahasa Inggris, lalu susun hurufnya.";
+        if (helperEl) helperEl.textContent = "Bantu 1 Huruf";
+        if (mainBtnLabel) mainBtnLabel.textContent = "Cek Kata";
+      } else {
+        if (mascotEl) mascotEl.textContent = "Ketuk gambar untuk mendengar bunyi kata, lalu ketuk huruf secara berurutan.";
+        if (helperEl) helperEl.textContent = "Bantu 1 Huruf";
+        if (mainBtnLabel) mainBtnLabel.textContent = "Cek Kata";
+      }
+    }
+
+    function openQuizLevelMenu(mode) {
+      clearAllTimers();
+      quizState.mode = mode;
+      quizState.level = 1;
+      updateQuizTabsUI();
+      loadNewQuizItem();
+    }
+
+    function selectQuizLevel(lvl) {
+      clearAllTimers();
+      playTapTone();
+      quizState.level = lvl;
+      updateQuizTabsUI();
+      loadNewQuizItem();
+    }
+
+    function loadNewQuizItem() {
+      clearAllTimers();
+      quizState.hasCompleted = false;
+      quizState.wrongShake = false;
+      quizState.currentQ = generateSingleQuizQuestion(quizState.mode, quizState.level);
+
+      if (quizState.mode === 'math') {
+        quizState.mathInput = '';
+        setQuizStatusBadge("", "");
+        setQuizLiveTranscript("Ketuk angka di bawah lalu tekan Cek Jawaban...", "text-slate-500 dark:text-slate-400");
+      } else {
+        const chars = quizState.currentQ.word.split('');
+        quizState.slots = Array(chars.length).fill(null);
+        // Pastikan urutan huruf acak tidak langsung sama persis dengan jawaban
+        let shuffledPool = chars.map((c, i) => ({ id: i, char: c, used: false }));
+        for (let attempt = 0; attempt < 5; attempt++) {
+          shuffledPool.sort(() => Math.random() - 0.5);
+          if (shuffledPool.map(p => p.char).join('') !== quizState.currentQ.word) break;
+        }
+        quizState.pool = shuffledPool;
+        setQuizStatusBadge("", "");
+        setQuizLiveTranscript("Ketuk huruf di bawah secara berurutan...", "text-slate-500 dark:text-slate-400");
+      }
+
+      renderQuizView();
+    }
+
+    function nextQuizItem() {
+      playTapTone();
+      loadNewQuizItem();
+    }
+
+    function speakQuizCurrentItem() {
+      const q = quizState.currentQ;
+      if (!q) return;
+      if (quizState.mode === 'math') {
+        const opWord = q.op === '+' ? 'ditambah' : 'dikurangi';
+        speakTextSafe(`${q.n1} ${opWord} ${q.n2} sama dengan berapa?`, 'id-ID', 0.85);
+      } else {
+        const lang = quizState.mode === 'reading_en' ? 'en-US' : 'id-ID';
+        speakSingleWord(q.word.toLowerCase(), lang);
+      }
+    }
+
+    function handleQuizSuccess(transcriptMessage) {
+      clearAllTimers();
+      quizState.hasCompleted = true;
+      quizState.wrongShake = false;
+      playSuccessTone();
+      triggerConfetti(false);
+      setQuizStatusBadge("BERHASIL!", "bg-emerald-500 text-white");
+      setQuizLiveTranscript(transcriptMessage, "text-emerald-600 dark:text-emerald-400 font-extrabold");
+      renderQuizView();
+
+      autoNextTimeout = setTimeout(() => {
+        loadNewQuizItem();
+      }, 2200);
+    }
+
+    function handleMathNumPress(num) {
+      getAudioContext();
+      if (quizState.hasCompleted || quizState.mathInput.length >= 3) return;
+      quizState.wrongShake = false;
+      playWordTone();
+      quizState.mathInput += String(num);
+      setQuizStatusBadge("", "");
+      const q = quizState.currentQ;
+      setQuizLiveTranscript(`"${q.n1} ${q.op} ${q.n2} = ${quizState.mathInput}"`, "text-slate-700 dark:text-slate-200 font-bold");
+      renderQuizView();
+    }
+
+    function handleMathClear() {
+      getAudioContext();
+      if (quizState.hasCompleted) return;
+      quizState.wrongShake = false;
+      playDeleteTone();
+      quizState.mathInput = '';
+      setQuizStatusBadge("", "");
+      setQuizLiveTranscript("Ketuk angka di bawah lalu tekan Cek Jawaban...", "text-slate-500 dark:text-slate-400");
+      renderQuizView();
+    }
+
+    function submitMathAnswer() {
+      getAudioContext();
+      if (quizState.hasCompleted) return;
+      if (quizState.mathInput === '') {
+        showToast("Ketuk angka jawaban terlebih dahulu!", "info");
+        return;
+      }
+      const q = quizState.currentQ;
+      const isCorrect = parseInt(quizState.mathInput, 10) === q.ans;
+
+      if (isCorrect) {
+        addRewardPoints(1, false);
+        const opWord = q.op === '+' ? 'ditambah' : 'dikurangi';
+        handleQuizSuccess(`"${q.n1} ${opWord} ${q.n2} sama dengan ${q.ans}"`);
+      } else {
+        playWrongTone();
+        quizState.wrongShake = true;
+        setQuizStatusBadge("BELUM TEPAT", "bg-rose-500 text-white");
+        setQuizLiveTranscript(`Jawaban ${quizState.mathInput} belum tepat, ayo coba lagi!`, "text-rose-500 dark:text-rose-400 font-bold");
+        renderQuizView();
+        quizFeedbackTimeout = setTimeout(() => {
+          quizState.wrongShake = false;
+          quizState.mathInput = '';
+          renderQuizView();
+        }, 700);
+      }
+    }
+
+    // Interaksi Susun Kata (ID & EN)
+    function handlePoolTileClick(tileId) {
+      getAudioContext();
+      if (quizState.hasCompleted) return;
+      const emptyIdx = quizState.slots.indexOf(null);
+      if (emptyIdx === -1) return;
+
+      const tileObj = quizState.pool.find(p => p.id === tileId && !p.used);
+      if (!tileObj) return;
+
+      quizState.wrongShake = false;
+      playWordTone();
+      tileObj.used = true;
+      quizState.slots[emptyIdx] = tileObj;
+
+      const currentBuilt = quizState.slots.filter(Boolean).map(s => s.char).join('');
+      setQuizStatusBadge("", "");
+      setQuizLiveTranscript(`"${currentBuilt}"`, "text-slate-700 dark:text-slate-200 font-bold");
+      renderQuizView();
+
+      // Evaluasi otomatis apabila seluruh kotak huruf telah terisi
+      if (!quizState.slots.includes(null)) {
+        submitReadingAnswer();
+      }
+    }
+
+    function handleSlotClick(slotIdx) {
+      getAudioContext();
+      if (quizState.hasCompleted) return;
+      const slotItem = quizState.slots[slotIdx];
+      if (!slotItem) return;
+
+      quizState.wrongShake = false;
+      playDeleteTone();
+      const poolItem = quizState.pool.find(p => p.id === slotItem.id);
+      if (poolItem) poolItem.used = false;
+      quizState.slots[slotIdx] = null;
+
+      const currentBuilt = quizState.slots.filter(Boolean).map(s => s.char).join('');
+      setQuizStatusBadge("", "");
+      setQuizLiveTranscript(currentBuilt ? `"${currentBuilt}"` : "Ketuk huruf di bawah secara berurutan...", "text-slate-500 dark:text-slate-400");
+      renderQuizView();
+    }
+
+    function handleReadingReset() {
+      getAudioContext();
+      if (quizState.hasCompleted) return;
+      quizState.wrongShake = false;
+      playDeleteTone();
+      quizState.slots = quizState.slots.map(() => null);
+      quizState.pool.forEach(p => { p.used = false; });
+      setQuizStatusBadge("", "");
+      setQuizLiveTranscript("Huruf direset. Ketuk huruf secara berurutan...", "text-slate-500 dark:text-slate-400");
+      renderQuizView();
+    }
+
+    function submitReadingAnswer() {
+      getAudioContext();
+      if (quizState.hasCompleted) return;
+      if (quizState.slots.includes(null)) {
+        showToast("Lengkapi semua kotak huruf terlebih dahulu!", "info");
+        return;
+      }
+
+      const userWord = quizState.slots.map(s => s.char).join('');
+      const q = quizState.currentQ;
+      const isCorrect = userWord === q.word;
+
+      if (isCorrect) {
+        // Berikan poin gamifikasi sesuai tingkat kesulitan
+        addRewardPoints(1, false);
+        handleQuizSuccess(`"${q.emoji} ${q.word}"`);
+      } else {
+        playWrongTone();
+        quizState.wrongShake = true;
+        setQuizStatusBadge("BELUM TEPAT", "bg-rose-500 text-white");
+        setQuizLiveTranscript(`Susunan "${userWord}" belum tepat. Ketuk huruf untuk memperbaiki!`, "text-rose-500 dark:text-rose-400 font-bold");
+        renderQuizView();
+        quizFeedbackTimeout = setTimeout(() => {
+          quizState.wrongShake = false;
+          renderQuizView();
+        }, 600);
+      }
+    }
+
+    function triggerQuizMainAction() {
+      if (quizState.mode === 'math') {
+        submitMathAnswer();
+      } else {
+        submitReadingAnswer();
+      }
+    }
+
+    function quizHelperStep() {
+      getAudioContext();
+      if (quizState.hasCompleted || !quizState.currentQ) return;
+
+      if (quizState.mode === 'math') {
+        quizState.mathInput = String(quizState.currentQ.ans);
+        submitMathAnswer();
+        return;
+      }
+
+      const targetChars = quizState.currentQ.word.split('');
+      // Bersihkan terlebih dahulu huruf di slot yang salah posisi
+      for (let i = 0; i < quizState.slots.length; i++) {
+        if (quizState.slots[i] && quizState.slots[i].char !== targetChars[i]) {
+          const poolItem = quizState.pool.find(p => p.id === quizState.slots[i].id);
+          if (poolItem) poolItem.used = false;
+          quizState.slots[i] = null;
+        }
+      }
+
+      // Isi 1 huruf yang benar di slot kosong pertama
+      const nextEmptyIdx = quizState.slots.indexOf(null);
+      if (nextEmptyIdx !== -1) {
+        const neededChar = targetChars[nextEmptyIdx];
+        const tileObj = quizState.pool.find(p => !p.used && p.char === neededChar);
+        if (tileObj) {
+          handlePoolTileClick(tileObj.id);
+        }
+      }
+    }
+
+    function simulateQuizSuccess() {
+      getAudioContext();
+      clearAllTimers();
+      if (quizState.hasCompleted) {
+        loadNewQuizItem();
+      }
+
+      setQuizLiveTranscript("Menjalankan simulasi otomatis...", "text-brand-600 dark:text-brand-400");
+
+      if (quizState.mode === 'math') {
+        const digits = String(quizState.currentQ.ans).split('');
+        quizState.mathInput = '';
+        let idx = 0;
+        simulationInterval = setInterval(() => {
+          if (idx < digits.length) {
+            handleMathNumPress(digits[idx]);
+            idx++;
+          } else {
+            clearInterval(simulationInterval);
+            simulationInterval = null;
+            submitMathAnswer();
+          }
+        }, 420);
+      } else {
+        handleReadingReset();
+        simulationInterval = setInterval(() => {
+          if (!quizState.hasCompleted && quizState.slots.includes(null)) {
+            quizHelperStep();
+          } else {
+            clearInterval(simulationInterval);
+            simulationInterval = null;
+          }
+        }, 420);
+      }
+    }
+
+    function renderQuizView() {
+      const stage = document.getElementById('quizDynamicStage');
+      if (!stage || !quizState.currentQ) return;
+
+      const isMath = quizState.mode === 'math';
+      const q = quizState.currentQ;
+
+      if (isMath) {
+        const answerBoxClass = quizState.hasCompleted
+          ? 'correct'
+          : quizState.wrongShake
+            ? 'wrong-shake'
+            : 'active-target';
+
+        const numpadButtons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map(n => `
+          <button type="button" onclick="handleMathNumPress(${n})" class="word-pill w-12 h-12 sm:w-14 sm:h-14 rounded-2xl font-heading font-extrabold text-xl sm:text-2xl select-none">
+            ${n}
+          </button>
+        `).join('');
+
+        stage.innerHTML = `
+          <div class="w-full flex flex-col items-center gap-5 sm:gap-6">
+            <!-- Baris Persamaan Bergaya Word-Pill Ayo Baca -->
+            <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4">
+              <div class="word-pill px-5 py-3 sm:px-7 sm:py-4 rounded-2xl sm:rounded-3xl font-heading font-extrabold text-3xl sm:text-5xl select-none">
+                ${q.n1}
+              </div>
+              <div class="px-2 font-heading font-extrabold text-3xl sm:text-5xl text-brand-600 dark:text-brand-400 select-none">
+                ${q.op}
+              </div>
+              <div class="word-pill px-5 py-3 sm:px-7 sm:py-4 rounded-2xl sm:rounded-3xl font-heading font-extrabold text-3xl sm:text-5xl select-none">
+                ${q.n2}
+              </div>
+              <div class="px-2 font-heading font-extrabold text-3xl sm:text-5xl text-slate-400 dark:text-slate-500 select-none">
+                =
+              </div>
+              <button type="button" onclick="handleMathClear()" title="Ketuk untuk menghapus angka" class="word-pill ${answerBoxClass} min-w-[76px] sm:min-w-[100px] px-5 py-3 sm:px-7 sm:py-4 rounded-2xl sm:rounded-3xl font-heading font-extrabold text-3xl sm:text-5xl select-none">
+                ${quizState.mathInput !== '' ? quizState.mathInput : '?'}
+              </button>
+            </div>
+
+            <!-- Baris Tombol Angka 3D -->
+            <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 max-w-md">
+              ${numpadButtons}
+              <button type="button" onclick="handleMathClear()" title="Hapus Angka" class="word-pill btn-3d-rose px-4 h-12 sm:h-14 rounded-2xl font-heading font-extrabold text-sm sm:text-base flex items-center gap-1">
+                <span>Hapus</span>
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        // TAMPILAN SUSUN KATA (ID & EN) KONSISTEN DENGAN AYO BACA
+        const firstEmptyIdx = quizState.slots.indexOf(null);
+
+        const slotsHtml = quizState.slots.map((s, idx) => {
+          let pillStateClass = '';
+          if (quizState.hasCompleted) {
+            pillStateClass = 'correct';
+          } else if (quizState.wrongShake) {
+            pillStateClass = 'wrong-shake';
+          } else if (s) {
+            pillStateClass = 'active-target';
+          } else if (idx === firstEmptyIdx) {
+            pillStateClass = 'active-target opacity-90';
+          } else {
+            pillStateClass = 'opacity-65';
+          }
+
+          return `
+            <button type="button" onclick="handleSlotClick(${idx})" title="${s ? 'Ketuk untuk melepas huruf' : 'Kotak huruf'}" class="word-pill ${pillStateClass} w-12 h-14 sm:w-16 sm:h-18 rounded-2xl sm:rounded-3xl font-heading font-extrabold text-2xl sm:text-4xl select-none">
+              ${s ? s.char : '•'}
+            </button>
+          `;
+        }).join('');
+
+        const poolHtml = quizState.pool.map(item => `
+          <button type="button" onclick="handlePoolTileClick(${item.id})" ${item.used ? 'disabled' : ''} class="word-pill w-12 h-13 sm:w-14 sm:h-15 rounded-2xl font-heading font-extrabold text-xl sm:text-3xl select-none ${item.used ? 'tile-used' : ''}">
+            ${item.char}
+          </button>
+        `).join('');
+
+        stage.innerHTML = `
+          <div class="w-full flex flex-col items-center gap-4 sm:gap-5">
+            <!-- Ilustrasi Emoji Interaktif -->
+            <button type="button" onclick="speakQuizCurrentItem()" title="Ketuk gambar untuk mendengar cara baca" class="text-6xl sm:text-7xl filter drop-shadow-md hover:scale-110 active:scale-95 transition-transform cursor-pointer bg-transparent border-0 leading-none">
+              ${q.emoji}
+            </button>
+
+            <!-- Baris Kotak Target Penyusunan Huruf (Gaya Word-Pill) -->
+            <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+              ${slotsHtml}
+            </div>
+
+            <!-- Baris Kepingan Huruf Acak -->
+            <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 pt-1">
+              ${poolHtml}
+              <button type="button" onclick="handleReadingReset()" title="Ulangi Susunan Huruf" class="word-pill btn-3d-rose px-3.5 h-12 sm:h-14 rounded-2xl font-heading font-extrabold text-xs sm:text-sm">
+                Ulangi
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
     function openCustomModal() {
       if (isListening) stopListening();
       clearAllTimers();
@@ -1342,9 +2232,9 @@
         if (!tab) return;
         const isCurrent = lvl === 'custom';
         if (lvl === 'custom') {
-          tab.className = `level-tab px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full text-sm font-bold ${isCurrent ? 'active' : 'inactive'} touch-manipulation flex justify-center items-center gap-1.5 group whitespace-nowrap`;
+          tab.className = `level-tab px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold ${isCurrent ? 'active' : 'inactive'} touch-manipulation flex justify-center items-center gap-1.5 group whitespace-nowrap`;
         } else {
-          tab.className = `level-tab flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-sm font-bold inactive touch-manipulation whitespace-nowrap`;
+          tab.className = `level-tab flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold inactive touch-manipulation whitespace-nowrap`;
         }
       });
 
@@ -1369,7 +2259,7 @@
       }, 3200);
     }
 
-    // Dukungan pintasan keyboard untuk pengguna Desktop & tutup modal dengan Escape
+    // Dukungan penuh Keyboard untuk Desktop (Matematika, Susun Kata, Modal)
     window.addEventListener('keydown', (e) => {
       const customModal = document.getElementById('customModal');
       const resetModal = document.getElementById('resetModal');
@@ -1385,6 +2275,38 @@
       if (isCustomOpen && e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         applyCustomText();
+        return;
+      }
+
+      if (isCustomOpen || isResetOpen) return;
+
+      // Pintasan keyboard saat bermain Matematika / Susun Kata
+      if (activeGameMode !== 'home' && activeGameMode !== 'ayobaca') {
+        if (quizState.mode === 'math') {
+          if (e.key >= '0' && e.key <= '9') {
+            handleMathNumPress(parseInt(e.key, 10));
+          } else if (e.key === 'Backspace') {
+            handleMathClear();
+          } else if (e.key === 'Enter') {
+            submitMathAnswer();
+          }
+        } else {
+          const upperKey = e.key.toUpperCase();
+          if (/^[A-Z]$/.test(upperKey)) {
+            const availableTile = quizState.pool.find(p => !p.used && p.char === upperKey);
+            if (availableTile) handlePoolTileClick(availableTile.id);
+          } else if (e.key === 'Backspace') {
+            // Hapus huruf terakhir yang terisi
+            for (let i = quizState.slots.length - 1; i >= 0; i--) {
+              if (quizState.slots[i] !== null) {
+                handleSlotClick(i);
+                break;
+              }
+            }
+          } else if (e.key === 'Enter') {
+            submitReadingAnswer();
+          }
+        }
       }
     });
 
